@@ -1,0 +1,14 @@
+<medicines>
+  <medicine>
+    <externalId>b-777</externalId>
+    <title>Nurofen Tablets 200mg</title>
+    <producer>Reckitt Benckiser Ltd.</producer>
+    <barcode>0505-0123-4567-89</barcode>
+    <dosage>200 mg</dosage>
+    <pack>24 tablets</pack>
+    <dosageForm>tablets</dosageForm>
+    <rx>false</rx>
+    <origin>United Kingdom</origin>
+    <registeredAt>15.01.2023</registeredAt>
+  </medicine>
+</medicines>

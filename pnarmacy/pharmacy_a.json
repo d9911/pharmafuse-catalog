@@ -1,0 +1,14 @@
+[
+  {
+    "id": "a-100",
+    "name": "Nurofen 200 mg Tablets",
+    "manufacturer": "Reckitt Benckiser",
+    "gtin": "05050123456789",
+    "dosage_mg": 200,
+    "package_size": 24,
+    "form": "tablet",
+    "prescription_required": false,
+    "country": "GB",
+    "registration_date": "2023-01-15"
+  }
+]
