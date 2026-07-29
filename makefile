@@ -25,7 +25,7 @@ SHELL_SCRIPTS := $(shell find docker scripts -type f -name '*.sh' 2>/dev/null)
 export APP_PORT
 
 .PHONY: \
-	help setup env install install-ci ci-tools deps audit audit-prod audit-ci \
+	help i setup env env-check install install-ci ci-tools deps deps-ensure audit audit-prod audit-ci \
 	migrate migrate-revert \
 	dev start start-prod \
 	format format-check lint lint-code lint-shell typecheck build \
@@ -39,6 +39,9 @@ export APP_PORT
 help: ## Показать все рабочие команды проекта
 	@awk 'BEGIN {FS = ":.*## "; printf "Использование: make <цель>\n\nЦели:\n"} /^[a-zA-Z0-9_-]+:.*## / {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
+i: ## Инициализировать macOS или Ubuntu окружение через NVM
+	DRY_RUN="$(DRY_RUN)" bash scripts/init-environment.sh
+
 setup: ## Подготовить окружение, установить зависимости и применить миграции
 	$(MAKE) env
 	$(MAKE) install
@@ -51,6 +54,9 @@ env: ## Создать .env из .env.example, не перезаписывая �
 		cp .env.example .env; \
 		echo ".env создан из .env.example"; \
 	fi
+
+env-check: ## Проверить NVM, Node.js, npm и ShellCheck без установки
+	CHECK_ONLY=1 REQUIRE_DOCKER="$(REQUIRE_DOCKER)" bash scripts/init-environment.sh
 
 install: ## Установить зависимости
 	$(NPM) install
@@ -68,6 +74,9 @@ ci-tools: ## Установить системные инструменты пр
 
 deps: ## Проверить дерево установленных зависимостей
 	$(NPM) ls --all
+
+deps-ensure: ## Установить зависимости только при изменении lockfile
+	bash scripts/ensure-dependencies.sh
 
 audit: ## Проверить все зависимости по локальному кэшу npm audit
 	$(NPM) audit --offline
@@ -119,7 +128,7 @@ lint-shell: ## Проверить shell scripts через ShellCheck
 		printf "$(RED)$(BOLD)ShellCheck не установлен. Запустите make i.$(NC)\n"; \
 		exit 1; \
 	}
-	shellcheck $(SHELL_SCRIPTS)
+	shellcheck -x $(SHELL_SCRIPTS)
 
 typecheck: ## Проверить типы TypeScript
 	$(NPM) run typecheck
