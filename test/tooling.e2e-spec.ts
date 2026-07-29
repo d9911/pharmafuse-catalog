@@ -1,7 +1,9 @@
 import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
-import { spawnSync } from 'node:child_process'
+import { spawn, spawnSync, type ChildProcess } from 'node:child_process'
+import { once } from 'node:events'
+import { createServer } from 'node:net'
 
 const projectRoot = resolve(__dirname, '..')
 
@@ -10,6 +12,33 @@ function runScript(script: string, env: NodeJS.ProcessEnv = {}) {
     cwd: projectRoot,
     env: { ...process.env, NO_COLOR: '1', ...env },
     encoding: 'utf8',
+  })
+}
+
+async function reservePort(): Promise<number> {
+  const server = createServer()
+  server.listen(0, '127.0.0.1')
+  await once(server, 'listening')
+  const address = server.address()
+  if (address === null || typeof address === 'string') throw new Error('Expected a TCP address')
+  await new Promise<void>((resolveClose, rejectClose) => {
+    server.close((error) => {
+      if (error) rejectClose(error)
+      else resolveClose()
+    })
+  })
+  return address.port
+}
+
+async function waitForChildExit(child: ChildProcess): Promise<void> {
+  if (child.exitCode !== null || child.signalCode !== null) return
+
+  await new Promise<void>((resolveExit, rejectExit) => {
+    const timeout = setTimeout(() => rejectExit(new Error('Listener process did not exit')), 7_000)
+    child.once('exit', () => {
+      clearTimeout(timeout)
+      resolveExit()
+    })
   })
 }
 
@@ -75,5 +104,57 @@ mkdir -p "$PROJECT_ROOT/node_modules"
     } finally {
       rmSync(fixture, { recursive: true, force: true })
     }
+  })
+
+  it('terminates only the process listening on the configured port', async () => {
+    const port = await reservePort()
+    const listener = spawn(
+      process.execPath,
+      ['-e', `require('node:net').createServer().listen(${port}, '127.0.0.1', () => process.stdout.write('ready\\n'))`],
+      { stdio: ['ignore', 'pipe', 'inherit'] },
+    )
+
+    try {
+      await once(listener.stdout, 'data')
+      const result = runScript('free-port.sh', { APP_PORT: String(port) })
+
+      expect(result.status).toBe(0)
+      await waitForChildExit(listener)
+
+      const replacement = createServer()
+      replacement.listen(port, '127.0.0.1')
+      await once(replacement, 'listening')
+      await new Promise<void>((resolveClose) => replacement.close(() => resolveClose()))
+    } finally {
+      if (listener.exitCode === null) listener.kill('SIGKILL')
+    }
+  })
+
+  it('accepts an already free port and rejects an invalid port', async () => {
+    const port = await reservePort()
+    expect(runScript('free-port.sh', { APP_PORT: String(port) }).status).toBe(0)
+
+    const invalid = runScript('free-port.sh', { APP_PORT: '0' })
+    expect(invalid.status).not.toBe(0)
+    expect(invalid.stderr).toContain('APP_PORT must be an integer between 1 and 65535')
+  })
+
+  it('prints the dashboard URL without opening a browser when disabled', () => {
+    const result = runScript('open-dashboard.sh', { APP_PORT: '3008', OPEN_BROWSER: '0' })
+
+    expect(result.status).toBe(0)
+    expect(result.stdout).toContain('http://localhost:3008/graphiql')
+  })
+
+  it('falls back to printing the dashboard URL on headless Ubuntu', () => {
+    const result = runScript('open-dashboard.sh', {
+      PHARMAFUSE_OS: 'Linux',
+      DISPLAY: '',
+      WAYLAND_DISPLAY: '',
+      OPEN_BROWSER: '1',
+    })
+
+    expect(result.status).toBe(0)
+    expect(`${result.stdout}${result.stderr}`).toContain('http://localhost:3008/graphiql')
   })
 })

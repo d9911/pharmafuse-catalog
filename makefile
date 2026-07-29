@@ -32,6 +32,7 @@ export APP_PORT
 	test test-unit test-integration test-e2e test-file coverage \
 	cycles verify \
 	graph-update graph-query graph-god-nodes graph-diagnose \
+	port-free \
 	docker-config docker-build docker-up docker-stop docker-down \
 	docker-restart docker-logs docker-logs-tail docker-ps docker-health docker-smoke \
 	docker-shell docker-dist docker-verify
@@ -178,6 +179,9 @@ graph-god-nodes: ## Показать наиболее связанные узл�
 
 graph-diagnose: ## Проверить граф на дублирующиеся связи
 	$(GRAPHIFY) diagnose multigraph
+
+port-free: ## Освободить APP_PORT (по умолчанию 3008)
+	APP_PORT="$(APP_PORT)" bash scripts/free-port.sh
 
 docker-config: ## Проверить итоговую конфигурацию Docker Compose
 	$(DOCKER_COMPOSE) config --quiet
