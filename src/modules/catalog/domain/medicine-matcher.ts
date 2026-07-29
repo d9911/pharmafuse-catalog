@@ -4,10 +4,7 @@ import type {
   NormalizedMedicineCandidate,
 } from './catalog.types';
 
-type CandidateIdentity = Pick<
-  NormalizedMedicineCandidate,
-  'gtin' | 'gtinValid' | 'compositeKey'
->;
+type CandidateIdentity = Pick<NormalizedMedicineCandidate, 'gtin' | 'gtinValid' | 'compositeKey'>;
 
 export function selectMatch(
   candidate: CandidateIdentity,

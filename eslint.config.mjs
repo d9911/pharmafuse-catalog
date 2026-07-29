@@ -24,6 +24,7 @@ export default tseslint.config(
   },
   {
     files: ['src/modules/*/domain/**/*.ts'],
+    ignores: ['**/*.spec.ts', '**/*.int-spec.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -36,6 +37,12 @@ export default tseslint.config(
             '@/modules/*/infrastructure/*',
             '@/modules/*/presentation/*',
             '@/database/*',
+            '../application/*',
+            '../../application/*',
+            '../infrastructure/*',
+            '../../infrastructure/*',
+            '../presentation/*',
+            '../../presentation/*',
           ],
         },
       ],
@@ -43,6 +50,7 @@ export default tseslint.config(
   },
   {
     files: ['src/modules/*/application/**/*.ts'],
+    ignores: ['**/*.spec.ts', '**/*.int-spec.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -54,6 +62,11 @@ export default tseslint.config(
             '@/modules/*/infrastructure/*',
             '@/modules/*/presentation/*',
             '@/database/*',
+            '../infrastructure/*',
+            '../../infrastructure/*',
+            '../presentation/*',
+            '../../presentation/*',
+            '../../../database/*',
           ],
         },
       ],

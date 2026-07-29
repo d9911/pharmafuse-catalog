@@ -1,4 +1,4 @@
-# Pharmacy Catalog Service Design
+# PharmaFuse Service Design
 
 **Дата:** 2026-07-29  
 **Статус:** согласованный baseline для implementation plan  
@@ -512,8 +512,8 @@ GraphQL поверх HTTP уже возвращает JSON, поэтому от�
   presentation и app;
 - `madge --circular src` не находит циклических зависимостей;
 - TypeScript strict mode;
-- `graphify update . --no-cluster` после появления исходников;
-- `graphify query` используется для проверки направленности модулей.
+- `make graph-update` после появления исходников;
+- `make graph-query` используется для проверки направленности модулей.
 
 ## 13. Нефункциональные ограничения
 

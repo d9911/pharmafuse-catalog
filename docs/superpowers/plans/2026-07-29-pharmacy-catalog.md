@@ -1,4 +1,4 @@
-# Pharmacy Catalog Implementation Plan
+# PharmaFuse Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use
 > `superpowers:subagent-driven-development` (recommended) or
@@ -16,7 +16,13 @@ presentation и `AppModule` только связывают внешние ин�
 
 **Tech Stack:** Node.js 24, npm 11, NestJS 11, TypeScript 5.9, GraphQL Code First,
 Mercurius 16, Fastify 5, TypeORM 1, better-sqlite3 12, fast-xml-parser 5,
-Jest 30, Supertest 7, ESLint 10, Madge 8, Graphify.
+Jest 30, Fastify `inject()`, ESLint 10, Madge 8, Graphify.
+
+## Command Policy
+
+Все рабочие и проверочные сценарии запускаются через `make`. npm scripts в
+`package.json` остаются внутренней реализацией целей Makefile и не являются
+публичным интерфейсом команд проекта.
 
 ## Global Constraints
 
@@ -70,14 +76,12 @@ Jest 30, Supertest 7, ESLint 10, Madge 8, Graphify.
 | `@types/better-sqlite3` | `7.6.13` | SQLite typings |
 | `@types/jest` | `30.0.0` | Jest typings |
 | `@types/node` | `24.13.3` | Node 24 typings |
-| `@types/supertest` | `7.2.1` | Supertest typings |
 | `@eslint/js` | `10.0.1` | ESLint base config |
 | `eslint` | `10.8.0` | linting and import boundaries |
 | `eslint-config-prettier` | `10.1.8` | disables conflicting rules |
 | `jest` | `30.4.2` | test runner |
 | `madge` | `8.0.0` | circular dependency check |
 | `prettier` | `3.9.6` | formatting |
-| `supertest` | `7.2.2` | HTTP GraphQL e2e |
 | `ts-jest` | `29.4.12` | Jest TypeScript transform |
 | `ts-node` | `10.9.2` | TypeORM migration runner |
 | `tsconfig-paths` | `4.2.0` | path alias resolution |
@@ -208,7 +212,7 @@ GraphQL endpoint и имеет исполнимые architecture checks.
 
 ```json
 {
-  "name": "pharmacy-catalog-service",
+  "name": "pharmafuse-catalog",
   "version": "0.1.0",
   "private": true,
   "license": "UNLICENSED",
@@ -227,9 +231,9 @@ GraphQL endpoint и имеет исполнимые architecture checks.
     "test": "jest --runInBand",
     "test:unit": "jest --runInBand --testPathPatterns='spec.ts$' --testPathIgnorePatterns='int-spec|e2e-spec'",
     "test:integration": "jest --runInBand --testPathPatterns='int-spec.ts$'",
-    "test:e2e": "jest --config test/jest-e2e.json --runInBand",
+    "test:e2e": "node --no-warnings --experimental-vm-modules ./node_modules/jest/bin/jest.js --config test/jest-e2e.json --runInBand",
     "test:cov": "jest --coverage --runInBand",
-    "architecture:cycles": "madge --extensions ts --circular src",
+    "architecture:cycles": "madge --ts-config tsconfig.json --extensions ts --circular src",
     "architecture:graph": "graphify update . --no-cluster",
     "typeorm": "node --require ts-node/register --require tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:run": "npm run typeorm -- migration:run -d src/database/data-source.ts",
@@ -262,13 +266,11 @@ GraphQL endpoint и имеет исполнимые architecture checks.
     "@types/better-sqlite3": "7.6.13",
     "@types/jest": "30.0.0",
     "@types/node": "24.13.3",
-    "@types/supertest": "7.2.1",
     "eslint": "10.8.0",
     "eslint-config-prettier": "10.1.8",
     "jest": "30.4.2",
     "madge": "8.0.0",
     "prettier": "3.9.6",
-    "supertest": "7.2.2",
     "ts-jest": "29.4.12",
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
@@ -283,9 +285,9 @@ GraphQL endpoint и имеет исполнимые architecture checks.
 Run:
 
 ```bash
-npm install
-npm ls --all
-npm audit --omit=dev
+make install
+make deps
+make audit-prod
 ```
 
 Expected:
@@ -333,7 +335,7 @@ describe('loadAppConfig', () => {
 Run:
 
 ```bash
-npx jest src/config/app-config.spec.ts --runInBand
+make test-file FILE=src/config/app-config.spec.ts
 ```
 
 Expected: FAIL because `app-config.ts` does not exist.
@@ -469,9 +471,9 @@ added by later tasks, after their modules exist.
 Run:
 
 ```bash
-npm run typecheck
-npm run lint
-npm run build
+make typecheck
+make lint
+make build
 ```
 
 Expected: all three commands exit `0`.
@@ -587,7 +589,7 @@ describe('normalizeGtin', () => {
 Run:
 
 ```bash
-npx jest src/modules/catalog/domain/gtin.spec.ts --runInBand
+make test-file FILE=src/modules/catalog/domain/gtin.spec.ts
 ```
 
 Expected: FAIL because `normalizeGtin` is missing.
@@ -730,9 +732,9 @@ The matcher checks `VALID_GTIN`, then
 Run:
 
 ```bash
-npx jest src/modules/catalog/domain --runInBand
-npm run typecheck
-npm run lint
+make test-file FILE=src/modules/catalog/domain
+make typecheck
+make lint
 ```
 
 Expected: domain tests pass and architecture lint reports no outward imports.
@@ -872,8 +874,8 @@ fields.
 Run:
 
 ```bash
-npx jest src/modules/catalog/infrastructure/sources --runInBand
-npm run typecheck
+make test-file FILE=src/modules/catalog/infrastructure/sources
+make typecheck
 ```
 
 Expected: three reader suites pass; each returns one record; total records are
@@ -1070,9 +1072,9 @@ Everything written by one import batch must use the callback's
 Run:
 
 ```bash
-DATABASE_PATH=/tmp/pharmacy-plan-check.sqlite npm run migration:run
-npm run test:integration
-npm run migration:revert
+make migrate DATABASE_PATH=/tmp/pharmacy-plan-check.sqlite
+make test-integration
+make migrate-revert DATABASE_PATH=/tmp/pharmacy-plan-check.sqlite
 ```
 
 Expected:
@@ -1244,9 +1246,9 @@ values. Production providers are:
 Run:
 
 ```bash
-npx jest src/modules/catalog/application/import-catalog.use-case.spec.ts --runInBand
-npm run typecheck
-npm run lint
+make test-file FILE=src/modules/catalog/application/import-catalog.use-case.spec.ts
+make typecheck
+make lint
 ```
 
 Expected: success, idempotency, record-error and rollback tests all pass.
@@ -1406,10 +1408,10 @@ Also import `DatabaseModule` and `CatalogModule`.
 Run:
 
 ```bash
-npx jest src/modules/catalog/application/get-catalog.query.spec.ts --runInBand
-npx jest src/modules/catalog/presentation/graphql/catalog.resolver.spec.ts --runInBand
-npm run typecheck
-npm run build
+make test-file FILE=src/modules/catalog/application/get-catalog.query.spec.ts
+make test-file FILE=src/modules/catalog/presentation/graphql/catalog.resolver.spec.ts
+make typecheck
+make build
 ```
 
 Expected: tests pass and `schema.gql` is generated during initialized app tests
@@ -1555,7 +1557,7 @@ expect(response.status).toBe(200);
 Run:
 
 ```bash
-npm run test:e2e
+make test-e2e
 ```
 
 Expected: the complete acceptance suite passes against a newly migrated
@@ -1595,10 +1597,8 @@ SOURCE_ROOT=pnarmacy
 README command sequence:
 
 ```bash
-cp .env.example .env
-npm install
-npm run migration:run
-npm run start:dev
+make setup
+make dev
 ```
 
 Document GraphiQL URL:
@@ -1631,7 +1631,7 @@ Also explain:
 Run:
 
 ```bash
-npm run verify
+make verify
 ```
 
 Record each command and exit status. Do not claim a check passed unless its
@@ -1642,7 +1642,7 @@ current-turn output shows exit code `0`.
 Run after all source files exist:
 
 ```bash
-graphify update . --no-cluster
+make graph-update
 ```
 
 Expected:
@@ -1659,9 +1659,9 @@ report the exact error and do not describe the graph as updated.
 Run:
 
 ```bash
-graphify query "How do GraphQL catalog resolvers reach domain normalization and TypeORM persistence, and are there reverse dependencies from domain to infrastructure?" --budget 3000
-graphify god-nodes --top 10
-graphify diagnose multigraph
+make graph-query
+make graph-god-nodes
+make graph-diagnose
 ```
 
 Confirm graph evidence is consistent with:

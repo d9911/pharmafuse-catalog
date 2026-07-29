@@ -1,13 +1,7 @@
-import type {
-  ExistingMedicineIdentity,
-  NormalizedMedicineCandidate,
-} from './catalog.types';
+import type { ExistingMedicineIdentity, NormalizedMedicineCandidate } from './catalog.types';
 import { selectMatch } from './medicine-matcher';
 
-type CandidateIdentity = Pick<
-  NormalizedMedicineCandidate,
-  'gtin' | 'gtinValid' | 'compositeKey'
->;
+type CandidateIdentity = Pick<NormalizedMedicineCandidate, 'gtin' | 'gtinValid' | 'compositeKey'>;
 
 describe('selectMatch', () => {
   it.each<{
@@ -17,16 +11,12 @@ describe('selectMatch', () => {
   }>([
     {
       candidate: { gtin: '4006381333931', gtinValid: true, compositeKey: 'candidate' },
-      existing: [
-        { id: 'm1', gtin: '4006381333931', gtinValid: true, compositeKey: 'different' },
-      ],
+      existing: [{ id: 'm1', gtin: '4006381333931', gtinValid: true, compositeKey: 'different' }],
       expected: { medicineId: 'm1', strategy: 'VALID_GTIN' },
     },
     {
       candidate: { gtin: '05050123456789', gtinValid: false, compositeKey: 'same' },
-      existing: [
-        { id: 'm2', gtin: '05050123456789', gtinValid: false, compositeKey: 'same' },
-      ],
+      existing: [{ id: 'm2', gtin: '05050123456789', gtinValid: false, compositeKey: 'same' }],
       expected: { medicineId: 'm2', strategy: 'INVALID_GTIN_WITH_COMPOSITE' },
     },
     {
@@ -45,10 +35,9 @@ describe('selectMatch', () => {
 
   it('does not merge two different invalid GTIN values by composite key alone', () => {
     expect(
-      selectMatch(
-        { gtin: '11111111', gtinValid: false, compositeKey: 'same' },
-        [{ id: 'm1', gtin: '22222222', gtinValid: false, compositeKey: 'same' }],
-      ),
+      selectMatch({ gtin: '11111111', gtinValid: false, compositeKey: 'same' }, [
+        { id: 'm1', gtin: '22222222', gtinValid: false, compositeKey: 'same' },
+      ]),
     ).toEqual({ medicineId: null, strategy: 'NEW_RECORD' });
   });
 });

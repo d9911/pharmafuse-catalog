@@ -1,7 +1,7 @@
 import type { RawMedicineRecord } from './catalog.types';
 import { normalizeMedicine } from './medicine-normalizer';
 
-const rawRecords: RawMedicineRecord[] = [
+const rawRecords = [
   {
     providerCode: 'pharmacy-a',
     externalId: 'a-100',
@@ -50,7 +50,7 @@ const rawRecords: RawMedicineRecord[] = [
     registrationDate: '2023/01/15',
     rawPayload: { product_uid: 'c_991' },
   },
-];
+] as const satisfies readonly RawMedicineRecord[];
 
 describe('normalizeMedicine', () => {
   it('produces one deterministic identity for all three provider variants', () => {
@@ -74,7 +74,7 @@ describe('normalizeMedicine', () => {
   });
 
   it('normalizes presentation fields without hiding the invalid GTIN', () => {
-    const candidate = normalizeMedicine(rawRecords[1]!);
+    const candidate = normalizeMedicine(rawRecords[1]);
 
     expect(candidate).toMatchObject({
       canonicalName: 'Nurofen 200 mg tablets',
@@ -101,6 +101,6 @@ describe('normalizeMedicine', () => {
     ],
     ['registrationDate', { registrationDate: '31.02.2023' }, 'INVALID_DATE:31.02.2023'],
   ])('rejects unsupported %s instead of applying a default', (_field, patch, message) => {
-    expect(() => normalizeMedicine({ ...rawRecords[0]!, ...patch })).toThrow(message);
+    expect(() => normalizeMedicine({ ...rawRecords[0], ...patch })).toThrow(message);
   });
 });

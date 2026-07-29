@@ -1,8 +1,4 @@
-import type {
-  DosageForm,
-  NormalizedMedicineCandidate,
-  RawMedicineRecord,
-} from './catalog.types';
+import type { DosageForm, NormalizedMedicineCandidate, RawMedicineRecord } from './catalog.types';
 import { normalizeGtin } from './gtin';
 
 const DOSAGE_FORMS = new Set([
@@ -64,7 +60,7 @@ function dosageToMicrograms(value: number, unit: string): number {
 
   const micrograms = value * 1_000;
   if (!Number.isSafeInteger(micrograms) || micrograms <= 0) {
-    throw new Error(`INVALID_DOSAGE:${value} ${unit}`);
+    throw new Error(`INVALID_DOSAGE:${String(value)} ${unit}`);
   }
   return micrograms;
 }
@@ -134,14 +130,15 @@ function normalizeDate(value: string): string {
     throw new Error(`INVALID_DATE:${value}`);
   }
 
-  return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(
-    day,
-  ).padStart(2, '0')}`;
+  return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(
+    2,
+    '0',
+  )}`;
 }
 
 export function normalizeMedicine(record: RawMedicineRecord): NormalizedMedicineCandidate {
   if (!Number.isSafeInteger(record.packageSize) || record.packageSize <= 0) {
-    throw new Error(`INVALID_PACKAGE_SIZE:${record.packageSize}`);
+    throw new Error(`INVALID_PACKAGE_SIZE:${String(record.packageSize)}`);
   }
 
   const normalizedName = normalizeName(record.name);
@@ -163,7 +160,7 @@ export function normalizeMedicine(record: RawMedicineRecord): NormalizedMedicine
   const dosageMilligrams = dosageMicrograms / 1_000;
 
   const normalizedPayload = {
-    canonicalName: `${titleCase(normalizedName)} ${dosageMilligrams} mg tablets`,
+    canonicalName: `${titleCase(normalizedName)} ${String(dosageMilligrams)} mg tablets`,
     normalizedName,
     manufacturer: titleCase(normalizedManufacturer),
     normalizedManufacturer,

@@ -3,10 +3,7 @@ export type ProviderCode = 'pharmacy-a' | 'pharmacy-b' | 'pharmacy-c';
 export type DosageForm = 'TABLET';
 
 export type MatchStrategy =
-  | 'NEW_RECORD'
-  | 'VALID_GTIN'
-  | 'INVALID_GTIN_WITH_COMPOSITE'
-  | 'COMPOSITE_KEY';
+  'NEW_RECORD' | 'VALID_GTIN' | 'INVALID_GTIN_WITH_COMPOSITE' | 'COMPOSITE_KEY';
 
 export interface RawMedicineRecord {
   providerCode: ProviderCode;
