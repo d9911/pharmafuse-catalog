@@ -9,3 +9,4 @@ schema.gql
 graphify-out/
 .cache/
 .DS_Store
+package-lock.json

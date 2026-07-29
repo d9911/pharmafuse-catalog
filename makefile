@@ -5,6 +5,7 @@ GRAPHIFY := graphify
 DOCKER_COMPOSE := docker compose
 DOCKER_SERVICE := api
 APP_PORT ?= 3008
+OPEN_BROWSER ?= 1
 GRAPH_QUERY ?= How do GraphQL catalog resolvers reach domain normalization and TypeORM persistence, and are there reverse dependencies from domain to infrastructure?
 GRAPH_BUDGET ?= 3000
 GRAPH_TOP ?= 10
@@ -27,13 +28,13 @@ export APP_PORT
 .PHONY: \
 	help i setup env env-check install install-ci ci-tools deps deps-ensure audit audit-prod audit-ci \
 	migrate migrate-revert \
-	dev start start-prod \
-	format format-check lint lint-code lint-shell typecheck build \
+	dev start start-prod s s-doc \
+	clean-build format format-check lint lint-code lint-shell typecheck build \
 	test test-unit test-integration test-e2e test-file coverage \
 	cycles verify \
 	graph-update graph-query graph-god-nodes graph-diagnose \
 	port-free \
-	docker-config docker-build docker-up docker-stop docker-down \
+	docker-config docker-build docker-build-clean docker-up docker-up-ready docker-stop docker-down \
 	docker-restart docker-logs docker-logs-tail docker-ps docker-health docker-smoke \
 	docker-shell docker-dist docker-verify
 
@@ -110,6 +111,15 @@ start: ## Запустить приложение
 
 start-prod: ## Запустить собранное приложение
 	$(NPM) run start:prod
+
+s: ## Полностью проверить и запустить локальный dev на порту 3008
+	APP_PORT="$(APP_PORT)" OPEN_BROWSER="$(OPEN_BROWSER)" DRY_RUN="$(DRY_RUN)" bash scripts/start-local.sh
+
+s-doc: ## Полностью проверить и запустить Docker на порту 3008
+	APP_PORT="$(APP_PORT)" OPEN_BROWSER="$(OPEN_BROWSER)" DRY_RUN="$(DRY_RUN)" bash scripts/start-docker.sh
+
+clean-build: ## Удалить только generated build и coverage output
+	rm -rf dist coverage
 
 format: ## Исправить форматирование исходников
 	$(NPM) run format
@@ -191,8 +201,14 @@ docker-config: ## Проверить итоговую конфигурацию D
 docker-build: ## Собрать production Docker image
 	$(DOCKER_COMPOSE) build
 
+docker-build-clean: ## Пересобрать production Docker image без build cache
+	$(DOCKER_COMPOSE) build --no-cache
+
 docker-up: ## Собрать и запустить Docker-контейнер, дождавшись healthcheck
 	$(DOCKER_COMPOSE) up -d --build --wait
+
+docker-up-ready: ## Запустить уже собранный image и дождаться healthcheck
+	$(DOCKER_COMPOSE) up -d --force-recreate --wait
 
 docker-stop: ## Остановить Docker-контейнер без удаления
 	$(DOCKER_COMPOSE) stop

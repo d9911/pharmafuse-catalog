@@ -108,9 +108,10 @@ mkdir -p "$PROJECT_ROOT/node_modules"
 
   it('terminates only the process listening on the configured port', async () => {
     const port = await reservePort()
+    const portText = String(port)
     const listener = spawn(
       process.execPath,
-      ['-e', `require('node:net').createServer().listen(${port}, '127.0.0.1', () => process.stdout.write('ready\\n'))`],
+      ['-e', `require('node:net').createServer().listen(${portText}, '127.0.0.1', () => process.stdout.write('ready\\n'))`],
       { stdio: ['ignore', 'pipe', 'inherit'] },
     )
 
@@ -156,5 +157,40 @@ mkdir -p "$PROJECT_ROOT/node_modules"
 
     expect(result.status).toBe(0)
     expect(`${result.stdout}${result.stderr}`).toContain('http://localhost:3008/graphiql')
+  })
+
+  it('plans the complete local development lifecycle in order', () => {
+    const result = runScript('start-local.sh', { DRY_RUN: '1' })
+
+    expect(result.status).toBe(0)
+    expect(result.stdout.split('\n').filter((line) => line.startsWith('+ '))).toEqual([
+      '+ make docker-down (when Docker is running)',
+      '+ make port-free',
+      '+ make clean-build',
+      '+ make deps-ensure',
+      '+ make migrate',
+      '+ make verify',
+      '+ start readiness/import/browser helper',
+      '+ make dev',
+    ])
+  })
+
+  it('plans the complete Docker lifecycle in order', () => {
+    const result = runScript('start-docker.sh', { DRY_RUN: '1' })
+
+    expect(result.status).toBe(0)
+    expect(result.stdout.split('\n').filter((line) => line.startsWith('+ '))).toEqual([
+      '+ make docker-down',
+      '+ make port-free',
+      '+ make clean-build',
+      '+ make deps-ensure',
+      '+ make verify',
+      '+ make docker-config',
+      '+ make docker-build-clean',
+      '+ make docker-up-ready',
+      '+ make docker-health',
+      '+ make docker-smoke',
+      '+ open GraphiQL dashboard',
+    ])
   })
 })
