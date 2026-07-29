@@ -1,0 +1,23 @@
+name: pharmafuse
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pharmafuse-catalog:local
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      DATABASE_PATH: /app/data/pharmacy.sqlite
+      SOURCE_ROOT: /app/pnarmacy
+    ports:
+      - '${APP_PORT:-3000}:3000'
+    volumes:
+      - pharmafuse-data:/app/data
+    init: true
+    restart: unless-stopped
+
+volumes:
+  pharmafuse-data:

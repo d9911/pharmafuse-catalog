@@ -2,9 +2,14 @@
 
 NPM := npm
 GRAPHIFY := graphify
+DOCKER_COMPOSE := docker compose
+DOCKER_SERVICE := api
+APP_PORT ?= 3000
 GRAPH_QUERY ?= How do GraphQL catalog resolvers reach domain normalization and TypeORM persistence, and are there reverse dependencies from domain to infrastructure?
 GRAPH_BUDGET ?= 3000
 GRAPH_TOP ?= 10
+
+export APP_PORT
 
 .PHONY: \
 	help setup env install deps audit audit-prod \
@@ -13,7 +18,10 @@ GRAPH_TOP ?= 10
 	format format-check lint typecheck build \
 	test test-unit test-integration test-e2e test-file coverage \
 	cycles verify \
-	graph-update graph-query graph-god-nodes graph-diagnose
+	graph-update graph-query graph-god-nodes graph-diagnose \
+	docker-config docker-build docker-up docker-stop docker-down \
+	docker-restart docker-logs docker-logs-tail docker-ps docker-health docker-smoke \
+	docker-shell docker-dist docker-verify
 
 help: ## Показать все рабочие команды проекта
 	@awk 'BEGIN {FS = ":.*## "; printf "Использование: make <цель>\n\nЦели:\n"} /^[a-zA-Z0-9_-]+:.*## / {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -123,3 +131,53 @@ graph-god-nodes: ## Показать наиболее связанные узл�
 
 graph-diagnose: ## Проверить граф на дублирующиеся связи
 	$(GRAPHIFY) diagnose multigraph
+
+docker-config: ## Проверить итоговую конфигурацию Docker Compose
+	$(DOCKER_COMPOSE) config --quiet
+	sh -n docker/entrypoint.sh
+	node --check docker/healthcheck.mjs
+
+docker-build: ## Собрать production Docker image
+	$(DOCKER_COMPOSE) build
+
+docker-up: ## Собрать и запустить Docker-контейнер, дождавшись healthcheck
+	$(DOCKER_COMPOSE) up -d --build --wait
+
+docker-stop: ## Остановить Docker-контейнер без удаления
+	$(DOCKER_COMPOSE) stop
+
+docker-down: ## Остановить и удалить контейнер и сеть, сохранив SQLite volume
+	$(DOCKER_COMPOSE) down
+
+docker-restart: ## Перезапустить Docker-контейнер
+	$(DOCKER_COMPOSE) restart $(DOCKER_SERVICE)
+
+docker-logs: ## Следить за логами Docker-контейнера
+	$(DOCKER_COMPOSE) logs -f $(DOCKER_SERVICE)
+
+docker-logs-tail: ## Показать последние 200 строк логов Docker-контейнера
+	$(DOCKER_COMPOSE) logs --tail=200 $(DOCKER_SERVICE)
+
+docker-ps: ## Показать состояние Docker-контейнера
+	$(DOCKER_COMPOSE) ps
+
+docker-health: ## Показать Docker health status API-контейнера
+	@container_id="$$( $(DOCKER_COMPOSE) ps -q $(DOCKER_SERVICE) )"; \
+	test -n "$$container_id" || { echo "Контейнер $(DOCKER_SERVICE) не запущен" >&2; exit 2; }; \
+	docker inspect --format '{{.State.Health.Status}}' "$$container_id"
+
+docker-smoke: ## Проверить GraphQL API запущенного контейнера
+	GRAPHQL_URL="http://127.0.0.1:$(APP_PORT)/graphql" node docker/smoke.mjs
+
+docker-shell: ## Открыть shell внутри API-контейнера
+	$(DOCKER_COMPOSE) exec $(DOCKER_SERVICE) sh
+
+docker-dist: ## Показать собранные JavaScript-файлы внутри Docker image
+	$(DOCKER_COMPOSE) run --rm --no-deps --entrypoint sh $(DOCKER_SERVICE) \
+		-c 'find dist -type f -name "*.js" | sort'
+
+docker-verify: ## Проверить Compose, поднять контейнер и выполнить GraphQL smoke test
+	$(MAKE) docker-config
+	$(MAKE) docker-up
+	$(MAKE) docker-health
+	$(MAKE) docker-smoke

@@ -42,6 +42,42 @@ make help
 SQLite создаётся через migration. В TypeORM установлено
 `synchronize: false`.
 
+## Docker
+
+Production-контейнер собирается в несколько стадий, запускается от пользователя
+`node`, автоматически применяет TypeORM-миграции перед стартом API и хранит
+SQLite в именованном volume `pharmafuse-data`.
+
+Собрать, запустить и проверить GraphQL:
+
+```bash
+make docker-verify
+```
+
+После успешного запуска:
+
+- GraphQL endpoint: `http://localhost:3000/graphql`;
+- состояние контейнера: `make docker-ps`;
+- health status: `make docker-health`;
+- проверка импорта и каталога: `make docker-smoke`;
+- логи: `make docker-logs`.
+
+Остановить контейнер, сохранив данные:
+
+```bash
+make docker-down
+```
+
+Для другого порта:
+
+```bash
+make docker-up APP_PORT=3100
+make docker-smoke APP_PORT=3100
+```
+
+Все Docker-операции проекта выполняются через цели Makefile. `make docker-down`
+не удаляет именованный SQLite volume.
+
 ## Импорт
 
 Mutation не принимает путь от клиента. Она читает только настроенные fixtures:

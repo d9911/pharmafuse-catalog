@@ -4,6 +4,7 @@ describe('loadAppConfig', () => {
   it('resolves configured paths from the project root', () => {
     const config = loadAppConfig({
       NODE_ENV: 'test',
+      HOST: '0.0.0.0',
       PORT: '3100',
       DATABASE_PATH: 'data/test.sqlite',
       SOURCE_ROOT: 'pnarmacy',
@@ -11,6 +12,7 @@ describe('loadAppConfig', () => {
 
     expect(config).toMatchObject({
       nodeEnv: 'test',
+      host: '0.0.0.0',
       port: 3100,
     });
     expect(config.databasePath).toMatch(/data\/test\.sqlite$/);

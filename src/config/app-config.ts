@@ -4,6 +4,7 @@ export const APP_CONFIG = Symbol('APP_CONFIG');
 
 export interface AppConfig {
   nodeEnv: string;
+  host: string;
   port: number;
   databasePath: string;
   sourceRoot: string;
@@ -17,6 +18,7 @@ export function loadAppConfig(env: NodeJS.ProcessEnv): AppConfig {
 
   return {
     nodeEnv: env.NODE_ENV ?? 'development',
+    host: env.HOST ?? '127.0.0.1',
     port,
     databasePath: resolve(process.cwd(), env.DATABASE_PATH ?? 'data/pharmacy.sqlite'),
     sourceRoot: resolve(process.cwd(), env.SOURCE_ROOT ?? 'pnarmacy'),
