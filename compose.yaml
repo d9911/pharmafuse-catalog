@@ -9,11 +9,11 @@ services:
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
-      PORT: 3000
+      PORT: 3008
       DATABASE_PATH: /app/data/pharmacy.sqlite
       SOURCE_ROOT: /app/pnarmacy
     ports:
-      - '${APP_PORT:-3000}:3000'
+      - '${APP_PORT:-3008}:3008'
     volumes:
       - pharmafuse-data:/app/data
     init: true

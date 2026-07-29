@@ -11,7 +11,7 @@ export interface AppConfig {
 }
 
 export function loadAppConfig(env: NodeJS.ProcessEnv): AppConfig {
-  const port = Number(env.PORT ?? 3000);
+  const port = Number(env.PORT ?? 3008);
   if (!Number.isInteger(port) || port < 1 || port > 65_535) {
     throw new Error('PORT must be an integer between 1 and 65535');
   }

@@ -355,7 +355,7 @@ export interface AppConfig {
 }
 
 export function loadAppConfig(env: NodeJS.ProcessEnv): AppConfig {
-  const port = Number(env.PORT ?? 3000);
+  const port = Number(env.PORT ?? 3008);
   if (!Number.isInteger(port) || port < 1 || port > 65_535) {
     throw new Error('PORT must be an integer between 1 and 65535');
   }
@@ -1589,7 +1589,7 @@ code.
 
 ```dotenv
 NODE_ENV=development
-PORT=3000
+PORT=3008
 DATABASE_PATH=data/pharmacy.sqlite
 SOURCE_ROOT=pnarmacy
 ```
@@ -1604,7 +1604,7 @@ make dev
 Document GraphiQL URL:
 
 ```text
-http://localhost:3000/graphql
+http://localhost:3008/graphql
 ```
 
 - [ ] **Step 2: Document the exact demo**

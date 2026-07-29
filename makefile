@@ -4,15 +4,15 @@ NPM := npm
 GRAPHIFY := graphify
 DOCKER_COMPOSE := docker compose
 DOCKER_SERVICE := api
-APP_PORT ?= 3000
+APP_PORT ?= 3008
 GRAPH_QUERY ?= How do GraphQL catalog resolvers reach domain normalization and TypeORM persistence, and are there reverse dependencies from domain to infrastructure?
-GRAPH_BUDGET ?= 3000
+GRAPH_BUDGET ?= 3008
 GRAPH_TOP ?= 10
 
 export APP_PORT
 
 .PHONY: \
-	help setup env install deps audit audit-prod \
+	help setup env install install-ci deps audit audit-prod audit-ci \
 	migrate migrate-revert \
 	dev start start-prod \
 	format format-check lint typecheck build \
@@ -42,6 +42,9 @@ env: ## Создать .env из .env.example, не перезаписывая �
 install: ## Установить зависимости
 	$(NPM) install
 
+install-ci: ## Установить точные версии зависимостей из lockfile для CI
+	$(NPM) ci
+
 deps: ## Проверить дерево установленных зависимостей
 	$(NPM) ls --all
 
@@ -50,6 +53,9 @@ audit: ## Проверить все зависимости по локально
 
 audit-prod: ## Проверить production-зависимости по локальному кэшу npm audit
 	$(NPM) audit --omit=dev --offline
+
+audit-ci: ## Остановить CI при critical-уязвимостях production-зависимостей
+	$(NPM) audit --omit=dev --audit-level=critical
 
 migrate: ## Применить миграции SQLite (опционально DATABASE_PATH=...)
 	@if [ -n "$(DATABASE_PATH)" ]; then \

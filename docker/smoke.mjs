@@ -1,4 +1,4 @@
-const endpoint = process.env.GRAPHQL_URL ?? 'http://127.0.0.1:3000/graphql';
+const endpoint = process.env.GRAPHQL_URL ?? 'http://127.0.0.1:3008/graphql';
 
 async function execute(query) {
   const response = await fetch(endpoint, {

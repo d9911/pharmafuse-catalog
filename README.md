@@ -1,90 +1,101 @@
-# PharmaFuse
+# PharmaFuse Catalog
 
-PharmaFuse — backend-сервис на NestJS/TypeScript, который читает три локальных
-аптечных источника, нормализует записи, объединяет дубликаты и сохраняет каталог
-вместе с происхождением каждого значения.
+[English](README.md) · [Русский](README.ru.md)
 
-## Stack
+[![CI](https://github.com/d9911/pharmafuse-catalog/actions/workflows/ci.yml/badge.svg)](https://github.com/d9911/pharmafuse-catalog/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/d9911/pharmafuse-catalog/actions/workflows/codeql.yml/badge.svg)](https://github.com/d9911/pharmafuse-catalog/actions/workflows/codeql.yml)
+![Node.js 24](https://img.shields.io/badge/Node.js-24-339933?logo=nodedotjs&logoColor=white)
+![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
+![Docker ready](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
+[![GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 
-- Node.js 24 и npm 11;
-- NestJS 11;
-- GraphQL Code First;
-- Fastify + Mercurius;
-- TypeORM + SQLite (`better-sqlite3`);
-- Jest;
-- ESLint, Madge и Graphify для архитектурных проверок.
+A NestJS and GraphQL service that turns heterogeneous pharmacy supplier data
+into one normalized, deduplicated, and traceable medicine catalog.
 
-Mercurius выбран после фактической проверки dependency tree: найденный
-`@nestjs/apollo@13.4.2` одновременно требовал Apollo Server 5 и устанавливал
-deprecated playground plugin с peer dependency Apollo Server 4. Mercurius
-устраняет этот конфликт и поддерживается официальным NestJS GraphQL driver.
+## What it does
 
-## Установка и запуск
+- reads JSON and XML records from three provider-specific adapters;
+- normalizes names, manufacturers, dosages, forms, packages, countries, dates,
+  booleans, and GTINs;
+- merges duplicates through deterministic GTIN and composite-key rules;
+- retains raw and normalized payloads with complete source provenance;
+- persists the catalog in SQLite through explicit TypeORM migrations;
+- exposes import statistics and the resulting catalog through GraphQL;
+- verifies normalization, idempotency, persistence, and API behavior with
+  automated tests.
 
-```bash
-make setup
-make dev
+## Architecture
+
+The catalog is a feature module built around Clean Architecture boundaries. The
+domain owns normalization and matching rules; application use cases own ports;
+GraphQL and TypeORM remain adapters.
+
+```text
+GraphQL presentation -> application use cases -> domain
+                              ^
+                              |
+          provider readers + TypeORM adapters
 ```
 
-Все рабочие сценарии проекта запускаются через `make`. `make setup` создаёт
-`.env` из `.env.example`, только если файла ещё нет, устанавливает зависимости
-и применяет миграции. Полный список доступных целей:
+The domain has no NestJS, GraphQL, TypeORM, or filesystem dependency. Madge
+checks circular imports, while Graphify provides an inspectable dependency
+graph. See the [catalog guide](docs/catalog-guide.md) for the matching rules and
+module details.
 
-```bash
-make help
-```
+## Requirements
 
-После запуска:
+Choose one execution path:
 
-- GraphQL endpoint: `http://localhost:3000/graphql`;
-- GraphiQL: `http://localhost:3000/graphiql`.
+| Path   | Required environment                                       |
+| ------ | ---------------------------------------------------------- |
+| Docker | Docker Engine or Docker Desktop with Compose v2, plus Make |
+| Local  | Node.js `>=24.11.0 <25`, npm `>=11 <12`, plus Make         |
 
-SQLite создаётся через migration. В TypeORM установлено
-`synchronize: false`.
+The repository pins the package-manager release as `npm@11.16.0`. Git is needed
+to clone and contribute to the repository.
 
-## Docker
+## Quick start with Docker
 
-Production-контейнер собирается в несколько стадий, запускается от пользователя
-`node`, автоматически применяет TypeORM-миграции перед стартом API и хранит
-SQLite в именованном volume `pharmafuse-data`.
-
-Собрать, запустить и проверить GraphQL:
+All project operations are exposed through the Makefile:
 
 ```bash
 make docker-verify
 ```
 
-После успешного запуска:
+This validates Compose, builds the production image, starts the non-root
+container, waits for its health check, and runs a GraphQL smoke test.
 
-- GraphQL endpoint: `http://localhost:3000/graphql`;
-- состояние контейнера: `make docker-ps`;
-- health status: `make docker-health`;
-- проверка импорта и каталога: `make docker-smoke`;
-- логи: `make docker-logs`.
+- GraphQL: <http://localhost:3008/graphql>
+- GraphiQL: <http://localhost:3008/graphiql>
+- container status: `make docker-ps`
+- logs: `make docker-logs`
+- stop while retaining SQLite data: `make docker-down`
 
-Остановить контейнер, сохранив данные:
-
-```bash
-make docker-down
-```
-
-Для другого порта:
+Use another host port when needed:
 
 ```bash
 make docker-up APP_PORT=3100
 make docker-smoke APP_PORT=3100
 ```
 
-Все Docker-операции проекта выполняются через цели Makefile. `make docker-down`
-не удаляет именованный SQLite volume.
+## Local development
 
-## Импорт
+```bash
+make setup
+make dev
+```
 
-Mutation не принимает путь от клиента. Она читает только настроенные fixtures:
+`make setup` creates `.env` from `.env.example` only when it is missing,
+installs dependencies, and applies SQLite migrations. Discover every supported
+command with:
 
-- `pnarmacy/pharmacy_a.json`;
-- `pnarmacy/pharmacy_b.xml`;
-- `pnarmacy/pharmacy_c.json`.
+```bash
+make help
+```
+
+## GraphQL preview
+
+Import the configured provider fixtures:
 
 ```graphql
 mutation ImportCatalog {
@@ -99,36 +110,11 @@ mutation ImportCatalog {
 }
 ```
 
-Ожидаемый результат первого импорта:
+For the bundled fixtures, the first import reads three provider records, creates
+one canonical medicine, links three source records, and reports two merged
+duplicates. Repeating the unchanged import creates no additional records.
 
-```json
-{
-  "data": {
-    "importCatalog": {
-      "status": "COMPLETED",
-      "providerRecordsRead": 3,
-      "medicinesCreated": 1,
-      "sourceRecordsLinked": 3,
-      "duplicatesMerged": 2,
-      "recordErrors": 0
-    }
-  }
-}
-```
-
-Расчёт:
-
-```text
-3 provider records
-- 1 canonical medicine
-= 2 merged duplicates
-```
-
-Повторный импорт тех же payload оставляет одно лекарство и три source records.
-Счётчики `medicinesCreated`, `sourceRecordsLinked` и `duplicatesMerged` во
-втором batch равны нулю.
-
-## Каталог
+Query the traceable catalog:
 
 ```graphql
 query Catalog {
@@ -143,103 +129,56 @@ query Catalog {
     }
     dosageForm
     packageSize
-    prescriptionRequired
-    countryCode
-    registrationDate
     sources {
       providerCode
       externalId
       sourceFile
-      rawPayloadJson
-      normalizedPayloadJson
       matchStrategy
     }
   }
 }
 ```
 
-Предоставленный GTIN `05050123456789` сохраняется с `gtinValid: false`:
-переданная контрольная цифра равна `9`, а рассчитанная GS1-контрольная цифра
-равна `4`. Поэтому такой GTIN объединяет записи только при одновременном
-совпадении composite key.
+The [catalog guide](docs/catalog-guide.md) contains the complete response,
+normalization rules, GTIN calculation, composite key, and provenance model.
 
-Composite key:
-
-```text
-normalizedName
-|normalizedManufacturer
-|dosageMicrograms
-|dosageForm
-|packageSize
-|countryCode
-```
-
-Для fixtures:
-
-```text
-nurofen|reckitt benckiser|200000|TABLET|24|GB
-```
-
-## Архитектура
-
-```text
-app composition
-    ↓
-presentation / GraphQL
-    ↓
-application / use cases and ports
-    ↓
-domain / normalization and matching
-
-infrastructure / files and TypeORM
-    └── implements application ports
-```
-
-Ограничения:
-
-- domain не импортирует NestJS, GraphQL, TypeORM или filesystem;
-- application не импортирует infrastructure или presentation;
-- ORM decorators находятся только в infrastructure;
-- fuzzy matching не используется;
-- исходный и нормализованный JSON каждой записи сохраняются отдельно;
-- одинаковый payload определяется SHA-256 и не записывается повторно.
-
-Подробности:
-
-- `docs/superpowers/specs/2026-07-29-pharmacy-catalog-design.md`;
-- `docs/superpowers/plans/2026-07-29-pharmacy-catalog.md`.
-
-## Проверка
-
-```bash
-make test
-make test-e2e
-make typecheck
-make lint
-make cycles
-make build
-```
-
-Полный набор:
+## Quality and security
 
 ```bash
 make verify
+make audit-prod
+make docker-config
 ```
 
-E2E использует временную SQLite database и Fastify `inject()`, поэтому не
-открывает сетевой порт.
+`make verify` runs formatting checks, ESLint, TypeScript validation, unit and
+integration tests, end-to-end tests, cycle detection, and a production build.
+GitHub Actions runs the same Make targets, builds the Docker image, and audits
+production dependencies. CodeQL analyzes JavaScript and TypeScript, while
+Dependabot monitors npm, Docker, and Actions dependencies.
 
-Graphify после изменения исходников:
+Security tooling reduces risk; it does not make the software invulnerable.
+Please report suspected vulnerabilities privately as described in
+[SECURITY.md](SECURITY.md).
 
-```bash
-make graph-update
-make graph-query
-make graph-god-nodes
-make graph-diagnose
-```
+## Lean by design
 
-Текст и бюджет архитектурного запроса можно переопределить:
+PharmaFuse uses a single service, an embedded SQLite database, deterministic
+matching, idempotent imports, and a multi-stage container image. This keeps the
+runtime and operational footprint small without making unverifiable
+environmental-impact claims.
 
-```bash
-make graph-query GRAPH_QUERY="How does catalog matching work?" GRAPH_BUDGET=12000
-```
+## Documentation
+
+- [Catalog, normalization, and verification guide](docs/catalog-guide.md)
+- [Security policy](SECURITY.md)
+- [Architecture design](docs/superpowers/specs/2026-07-29-pharmacy-catalog-design.md)
+- [Implementation plan](docs/superpowers/plans/2026-07-29-pharmacy-catalog.md)
+
+## Author
+
+[Denis Gutsuliak](https://t.me/d9911/) ·
+[admin@d9911.org](mailto:admin@d9911.org)
+
+## License
+
+[GPL-3.0-or-later](LICENSE)

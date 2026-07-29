@@ -25,7 +25,7 @@ FROM node:24-bookworm-slim AS runtime
 
 ENV NODE_ENV=production \
     HOST=0.0.0.0 \
-    PORT=3000 \
+    PORT=3008 \
     DATABASE_PATH=/app/data/pharmacy.sqlite \
     SOURCE_ROOT=/app/pnarmacy
 
@@ -43,7 +43,7 @@ RUN mkdir -p /app/data \
 
 USER node
 
-EXPOSE 3000
+EXPOSE 3008
 
 HEALTHCHECK --interval=5s --timeout=3s --start-period=10s --retries=10 \
   CMD ["node", "/app/docker/healthcheck.mjs"]

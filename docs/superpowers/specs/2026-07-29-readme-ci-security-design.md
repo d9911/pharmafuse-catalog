@@ -99,7 +99,7 @@ The README and `package.json` will describe two supported workflows.
 
 - Docker Engine, Docker Desktop, or OrbStack with Docker Compose v2;
 - GNU Make;
-- an available host port, default `3000`.
+- an available host port, default `3008`.
 
 ### Local workflow
 
@@ -159,9 +159,11 @@ GitHub actions against GitHub documentation before pinning workflow references.
 - a weekly scheduled run;
 - manual dispatch.
 
-The workflow will use GitHub's CodeQL initialization, a Makefile-driven build,
-and CodeQL analysis. It will request only the permissions needed to read source
-and upload security results.
+The workflow will use GitHub's CodeQL initialization with `build-mode: none`,
+as required for interpreted JavaScript/TypeScript, followed by CodeQL analysis.
+The separate CI workflow remains responsible for the Makefile-driven build. The
+CodeQL workflow will request only the permissions needed to read source and
+upload security results.
 
 The CodeQL badge in the README will link to this workflow. CodeQL will be
 described as static analysis, not as proof that the application has no
