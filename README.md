@@ -44,54 +44,64 @@ module details.
 
 ## Requirements
 
-Choose one execution path:
-
-| Path   | Required environment                                       |
-| ------ | ---------------------------------------------------------- |
-| Docker | Docker Engine or Docker Desktop with Compose v2, plus Make |
-| Local  | Node.js `>=24.11.0 <25`, npm `>=11 <12`, plus Make         |
-
-The repository pins the package-manager release as `npm@11.16.0`. Git is needed
-to clone and contribute to the repository.
-
-## Quick start with Docker
-
-All project operations are exposed through the Makefile:
+The bootstrap command supports macOS and Ubuntu:
 
 ```bash
-make docker-verify
+make i
 ```
 
-This validates Compose, builds the production image, starts the non-root
-container, waits for its health check, and runs a GraphQL smoke test.
+It installs missing host tools, NVM `0.40.4`, Node.js `24.11.0`, npm `11.16.0`,
+Docker with Compose, and ShellCheck. It then creates `.env` without overwriting
+an existing file and installs exact lockfile dependencies. System installation
+may request administrator permission.
+
+## Quick start
+
+Initialize the environment once, then start local development:
+
+```bash
+make i
+make s
+```
+
+`make s` frees port `3008`, removes generated builds, synchronizes dependencies,
+applies SQLite migrations, runs every quality gate, starts NestJS in watch mode,
+imports fixture data when needed, and opens GraphiQL.
 
 - GraphQL: <http://localhost:3008/graphql>
 - GraphiQL: <http://localhost:3008/graphiql>
+
+Press `Ctrl+C` to stop local development.
+
+## Docker start
+
+Run the complete Docker lifecycle with:
+
+```bash
+make s-doc
+```
+
+It frees port `3008`, verifies the project, rebuilds the image without the old
+build cache, starts the non-root container, waits for `healthy`, initializes the
+catalog, and opens GraphiQL. The healthy container remains running.
+
 - container status: `make docker-ps`
 - logs: `make docker-logs`
 - stop while retaining SQLite data: `make docker-down`
 
-Use another host port when needed:
+Useful options:
 
 ```bash
-make docker-up APP_PORT=3100
-make docker-smoke APP_PORT=3100
-```
-
-## Local development
-
-```bash
-make setup
-make dev
-```
-
-`make setup` creates `.env` from `.env.example` only when it is missing,
-installs dependencies, and applies SQLite migrations. Discover every supported
-command with:
-
-```bash
+make port-free
+make s OPEN_BROWSER=0
+make s-doc OPEN_BROWSER=0
+make s-doc APP_PORT=3100
 make help
 ```
+
+Build cleanup never removes `.env`, `node_modules`, the local SQLite database,
+or the named Docker volume. Migrations and catalog import are idempotent, so
+existing data is preserved.
 
 ## GraphQL preview
 
