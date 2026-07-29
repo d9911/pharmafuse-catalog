@@ -22,11 +22,11 @@
 
 ## 2. Проверенные исходные данные
 
-| Источник | Формат | Внешний ID | Название | GTIN до нормализации |
-|---|---|---:|---|---|
-| Pharmacy A | JSON-массив | `a-100` | `Nurofen 200 mg Tablets` | `05050123456789` |
-| Pharmacy B | XML | `b-777` | `Nurofen Tablets 200mg` | `0505-0123-4567-89` |
-| Pharmacy C | JSON с `items[].details` | `c_991` | `Nurofen Film-coated Tabs` | `05050123456789` |
+| Источник   | Формат                   | Внешний ID | Название                   | GTIN до нормализации |
+| ---------- | ------------------------ | ---------: | -------------------------- | -------------------- |
+| Pharmacy A | JSON-массив              |    `a-100` | `Nurofen 200 mg Tablets`   | `05050123456789`     |
+| Pharmacy B | XML                      |    `b-777` | `Nurofen Tablets 200mg`    | `0505-0123-4567-89`  |
+| Pharmacy C | JSON с `items[].details` |    `c_991` | `Nurofen Film-coated Tabs` | `05050123456789`     |
 
 После удаления символов, отличных от цифр, все три значения GTIN равны
 `05050123456789`.
@@ -113,64 +113,60 @@ infrastructure ──implements──> application/domain ports
 ## 5. Доменная модель
 
 ```ts
-type ProviderCode = 'pharmacy-a' | 'pharmacy-b' | 'pharmacy-c';
+type ProviderCode = 'pharmacy-a' | 'pharmacy-b' | 'pharmacy-c'
 
-type MatchStrategy =
-  | 'NEW_RECORD'
-  | 'VALID_GTIN'
-  | 'INVALID_GTIN_WITH_COMPOSITE'
-  | 'COMPOSITE_KEY';
+type MatchStrategy = 'NEW_RECORD' | 'VALID_GTIN' | 'INVALID_GTIN_WITH_COMPOSITE' | 'COMPOSITE_KEY'
 
 interface Dosage {
-  micrograms: number;
+  micrograms: number
 }
 
 interface NormalizedMedicineCandidate {
-  externalId: string;
-  providerCode: ProviderCode;
-  sourceFile: string;
-  name: string;
-  normalizedName: string;
-  manufacturer: string;
-  normalizedManufacturer: string;
-  gtin: string | null;
-  gtinValid: boolean;
-  dosage: Dosage;
-  dosageForm: 'TABLET';
-  packageSize: number;
-  prescriptionRequired: boolean;
-  countryCode: 'GB';
-  registrationDate: string;
-  compositeKey: string;
+  externalId: string
+  providerCode: ProviderCode
+  sourceFile: string
+  name: string
+  normalizedName: string
+  manufacturer: string
+  normalizedManufacturer: string
+  gtin: string | null
+  gtinValid: boolean
+  dosage: Dosage
+  dosageForm: 'TABLET'
+  packageSize: number
+  prescriptionRequired: boolean
+  countryCode: 'GB'
+  registrationDate: string
+  compositeKey: string
 }
 
 interface SourceReference {
-  id: string;
-  providerCode: ProviderCode;
-  externalId: string;
-  sourceFile: string;
-  rawPayloadJson: string;
-  normalizedPayloadJson: string;
-  payloadHash: string;
-  matchStrategy: MatchStrategy;
+  id: string
+  providerCode: ProviderCode
+  externalId: string
+  sourceFile: string
+  rawPayloadJson: string
+  normalizedPayloadJson: string
+  payloadHash: string
+  matchStrategy: MatchStrategy
 }
 
 interface Medicine {
-  id: string;
-  canonicalName: string;
-  normalizedName: string;
-  manufacturer: string;
-  normalizedManufacturer: string;
-  gtin: string | null;
-  gtinValid: boolean;
-  dosageMicrograms: number;
-  dosageForm: 'TABLET';
-  packageSize: number;
-  prescriptionRequired: boolean;
-  countryCode: 'GB';
-  registrationDate: string;
-  compositeKey: string;
-  sources: SourceReference[];
+  id: string
+  canonicalName: string
+  normalizedName: string
+  manufacturer: string
+  normalizedManufacturer: string
+  gtin: string | null
+  gtinValid: boolean
+  dosageMicrograms: number
+  dosageForm: 'TABLET'
+  packageSize: number
+  prescriptionRequired: boolean
+  countryCode: 'GB'
+  registrationDate: string
+  compositeKey: string
+  sources: SourceReference[]
 }
 ```
 
@@ -467,15 +463,15 @@ GraphQL поверх HTTP уже возвращает JSON, поэтому от�
 
 ## 11. Обработка ошибок
 
-| Ситуация | Поведение |
-|---|---|
-| Файл отсутствует или не читается | batch `FAILED`, транзакция откатывается |
-| JSON/XML синтаксически некорректен | batch `FAILED`, транзакция откатывается |
-| Одна запись не соответствует provider-схеме | `import_errors`, остальные записи продолжаются |
-| Неизвестная единица/форма/страна | `import_errors`, без неявного default |
-| Повторный неизменённый payload | source record пропускается идемпотентно |
-| Невалидный GTIN | сохраняется с `gtinValid=false`, требуется composite corroboration |
-| GraphQL ID не найден | `medicine` возвращает `null` |
+| Ситуация                                    | Поведение                                                          |
+| ------------------------------------------- | ------------------------------------------------------------------ |
+| Файл отсутствует или не читается            | batch `FAILED`, транзакция откатывается                            |
+| JSON/XML синтаксически некорректен          | batch `FAILED`, транзакция откатывается                            |
+| Одна запись не соответствует provider-схеме | `import_errors`, остальные записи продолжаются                     |
+| Неизвестная единица/форма/страна            | `import_errors`, без неявного default                              |
+| Повторный неизменённый payload              | source record пропускается идемпотентно                            |
+| Невалидный GTIN                             | сохраняется с `gtinValid=false`, требуется composite corroboration |
+| GraphQL ID не найден                        | `medicine` возвращает `null`                                       |
 
 В GraphQL не возвращаются stack traces и абсолютные пути файлов.
 

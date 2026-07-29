@@ -1,6 +1,6 @@
-import { Global, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { APP_CONFIG, loadAppConfig } from './app-config';
+import { Global, Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
+import { APP_CONFIG, loadAppConfig } from './app-config'
 
 @Global()
 @Module({

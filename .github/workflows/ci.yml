@@ -34,6 +34,9 @@ jobs:
       - name: Install dependencies
         run: make install-ci
 
+      - name: Install CI tools
+        run: make ci-tools
+
       - name: Verify application
         run: make verify
 

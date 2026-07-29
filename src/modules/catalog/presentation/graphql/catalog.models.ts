@@ -1,4 +1,4 @@
-import { Field, Float, ID, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, Float, ID, Int, ObjectType, registerEnumType } from '@nestjs/graphql'
 
 export enum DosageFormModel {
   TABLET = 'TABLET',
@@ -17,108 +17,108 @@ export enum ImportBatchStatusModel {
   FAILED = 'FAILED',
 }
 
-registerEnumType(DosageFormModel, { name: 'DosageForm' });
-registerEnumType(MatchStrategyModel, { name: 'MatchStrategy' });
-registerEnumType(ImportBatchStatusModel, { name: 'ImportBatchStatus' });
+registerEnumType(DosageFormModel, { name: 'DosageForm' })
+registerEnumType(MatchStrategyModel, { name: 'MatchStrategy' })
+registerEnumType(ImportBatchStatusModel, { name: 'ImportBatchStatus' })
 
 @ObjectType('Dosage')
 export class DosageModel {
   @Field(() => Float)
-  value!: number;
+  value!: number
 
   @Field()
-  unit!: string;
+  unit!: string
 }
 
 @ObjectType('MedicineSource')
 export class MedicineSourceModel {
   @Field()
-  providerCode!: string;
+  providerCode!: string
 
   @Field()
-  externalId!: string;
+  externalId!: string
 
   @Field()
-  sourceFile!: string;
+  sourceFile!: string
 
   @Field()
-  rawPayloadJson!: string;
+  rawPayloadJson!: string
 
   @Field()
-  normalizedPayloadJson!: string;
+  normalizedPayloadJson!: string
 
   @Field(() => MatchStrategyModel)
-  matchStrategy!: MatchStrategyModel;
+  matchStrategy!: MatchStrategyModel
 }
 
 @ObjectType('Medicine')
 export class MedicineModel {
   @Field(() => ID)
-  id!: string;
+  id!: string
 
   @Field()
-  canonicalName!: string;
+  canonicalName!: string
 
   @Field()
-  manufacturer!: string;
+  manufacturer!: string
 
   @Field(() => String, { nullable: true })
-  gtin!: string | null;
+  gtin!: string | null
 
   @Field()
-  gtinValid!: boolean;
+  gtinValid!: boolean
 
   @Field(() => DosageModel)
-  dosage!: DosageModel;
+  dosage!: DosageModel
 
   @Field(() => DosageFormModel)
-  dosageForm!: DosageFormModel;
+  dosageForm!: DosageFormModel
 
   @Field(() => Int)
-  packageSize!: number;
+  packageSize!: number
 
   @Field()
-  prescriptionRequired!: boolean;
+  prescriptionRequired!: boolean
 
   @Field()
-  countryCode!: string;
+  countryCode!: string
 
   @Field()
-  registrationDate!: string;
+  registrationDate!: string
 
   @Field(() => [MedicineSourceModel])
-  sources!: MedicineSourceModel[];
+  sources!: MedicineSourceModel[]
 }
 
 @ObjectType('ImportBatch')
 export class ImportBatchModel {
   @Field(() => ID)
-  id!: string;
+  id!: string
 
   @Field(() => ImportBatchStatusModel)
-  status!: ImportBatchStatusModel;
+  status!: ImportBatchStatusModel
 
   @Field()
-  startedAt!: string;
+  startedAt!: string
 
   @Field(() => String, { nullable: true })
-  finishedAt!: string | null;
+  finishedAt!: string | null
 
   @Field(() => Int)
-  providerRecordsRead!: number;
+  providerRecordsRead!: number
 
   @Field(() => Int)
-  medicinesCreated!: number;
+  medicinesCreated!: number
 
   @Field(() => Int)
-  sourceRecordsLinked!: number;
+  sourceRecordsLinked!: number
 
   @Field(() => Int)
-  duplicatesMerged!: number;
+  duplicatesMerged!: number
 
   @Field(() => Int)
-  recordErrors!: number;
+  recordErrors!: number
 
   @Field(() => String, { nullable: true })
-  failureMessage!: string | null;
+  failureMessage!: string | null
 }

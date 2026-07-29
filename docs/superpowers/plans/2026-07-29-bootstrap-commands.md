@@ -203,9 +203,7 @@ Add tests proving:
 expect(loadAppConfig({ NODE_ENV: 'development' }).graphiqlEnabled).toBe(true)
 expect(loadAppConfig({ NODE_ENV: 'production' }).graphiqlEnabled).toBe(false)
 expect(loadAppConfig({ NODE_ENV: 'production', GRAPHIQL_ENABLED: 'true' }).graphiqlEnabled).toBe(true)
-expect(() => loadAppConfig({ GRAPHIQL_ENABLED: 'yes' })).toThrow(
-  'GRAPHIQL_ENABLED must be true or false',
-)
+expect(() => loadAppConfig({ GRAPHIQL_ENABLED: 'yes' })).toThrow('GRAPHIQL_ENABLED must be true or false')
 ```
 
 The production change that makes these tests pass is a validated explicit

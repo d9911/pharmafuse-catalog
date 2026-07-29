@@ -1,16 +1,16 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
 @Entity('providers')
 export class ProviderOrmEntity {
   @PrimaryColumn('text')
-  id!: string;
+  id!: string
 
   @Column('text', { unique: true })
-  code!: string;
+  code!: string
 
   @Column('text')
-  name!: string;
+  name!: string
 
   @Column('text', { name: 'source_file' })
-  sourceFile!: string;
+  sourceFile!: string
 }

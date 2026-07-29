@@ -1,11 +1,11 @@
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { PharmacyAReader } from './pharmacy-a.reader';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { PharmacyAReader } from './pharmacy-a.reader'
 
 describe('PharmacyAReader', () => {
   it('maps the Pharmacy A JSON array without coercing its identity', async () => {
-    const reader = new PharmacyAReader(join(process.cwd(), 'pnarmacy'));
+    const reader = new PharmacyAReader(join(process.cwd(), 'pnarmacy'))
 
     await expect(reader.read()).resolves.toEqual([
       {
@@ -38,11 +38,11 @@ describe('PharmacyAReader', () => {
           },
         },
       },
-    ]);
-  });
+    ])
+  })
 
   it('returns a record failure while keeping valid records readable', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pharmacy-a-reader-'));
+    const root = await mkdtemp(join(tmpdir(), 'pharmacy-a-reader-'))
     await writeFile(
       join(root, 'pharmacy_a.json'),
       JSON.stringify([
@@ -60,12 +60,12 @@ describe('PharmacyAReader', () => {
         },
         { id: 'broken' },
       ]),
-    );
+    )
 
     try {
-      const results = await new PharmacyAReader(root).read();
-      expect(results).toHaveLength(2);
-      expect(results[0]).toMatchObject({ ok: true });
+      const results = await new PharmacyAReader(root).read()
+      expect(results).toHaveLength(2)
+      expect(results[0]).toMatchObject({ ok: true })
       expect(results[1]).toEqual({
         ok: false,
         providerCode: 'pharmacy-a',
@@ -74,9 +74,9 @@ describe('PharmacyAReader', () => {
         rawPayload: { id: 'broken' },
         errorCode: 'INVALID_PROVIDER_RECORD',
         message: 'pharmacy-a record 1 field name must be a string',
-      });
+      })
     } finally {
-      await rm(root, { recursive: true, force: true });
+      await rm(root, { recursive: true, force: true })
     }
-  });
-});
+  })
+})

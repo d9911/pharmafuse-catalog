@@ -6,16 +6,29 @@ DOCKER_COMPOSE := docker compose
 DOCKER_SERVICE := api
 APP_PORT ?= 3008
 GRAPH_QUERY ?= How do GraphQL catalog resolvers reach domain normalization and TypeORM persistence, and are there reverse dependencies from domain to infrastructure?
-GRAPH_BUDGET ?= 3008
+GRAPH_BUDGET ?= 3000
 GRAPH_TOP ?= 10
+
+GREEN  := \033[0;32m
+YELLOW := \033[0;33m
+BLUE   := \033[0;34m
+RED    := \033[0;31m
+CYAN   := \033[0;36m
+MAGENTA := \033[0;35m
+BOLD   := \033[1m
+DIM    := \033[2m
+UNDERLINE := \033[4m
+NC     := \033[0m
+
+SHELL_SCRIPTS := $(shell find docker scripts -type f -name '*.sh' 2>/dev/null)
 
 export APP_PORT
 
 .PHONY: \
-	help setup env install install-ci deps audit audit-prod audit-ci \
+	help setup env install install-ci ci-tools deps audit audit-prod audit-ci \
 	migrate migrate-revert \
 	dev start start-prod \
-	format format-check lint typecheck build \
+	format format-check lint lint-code lint-shell typecheck build \
 	test test-unit test-integration test-e2e test-file coverage \
 	cycles verify \
 	graph-update graph-query graph-god-nodes graph-diagnose \
@@ -44,6 +57,14 @@ install: ## Установить зависимости
 
 install-ci: ## Установить точные версии зависимостей из lockfile для CI
 	$(NPM) ci
+
+ci-tools: ## Установить системные инструменты проверки в Ubuntu CI
+	@command -v apt-get >/dev/null 2>&1 || { \
+		printf "$(RED)$(BOLD)ci-tools поддерживает только Ubuntu/Debian CI$(NC)\n"; \
+		exit 1; \
+	}
+	sudo apt-get update
+	sudo apt-get install -y shellcheck
 
 deps: ## Проверить дерево установленных зависимостей
 	$(NPM) ls --all
@@ -86,8 +107,19 @@ format: ## Исправить форматирование исходников
 format-check: ## Проверить форматирование без изменений
 	$(NPM) run format:check
 
-lint: ## Запустить ESLint
-	$(NPM) run lint
+lint: ## Запустить все линтеры проекта
+	$(MAKE) lint-code
+	$(MAKE) lint-shell
+
+lint-code: ## Проверить TypeScript через ESLint
+	$(NPM) run lint:code
+
+lint-shell: ## Проверить shell scripts через ShellCheck
+	@command -v shellcheck >/dev/null 2>&1 || { \
+		printf "$(RED)$(BOLD)ShellCheck не установлен. Запустите make i.$(NC)\n"; \
+		exit 1; \
+	}
+	shellcheck $(SHELL_SCRIPTS)
 
 typecheck: ## Проверить типы TypeScript
 	$(NPM) run typecheck

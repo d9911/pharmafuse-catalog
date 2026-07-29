@@ -1,4 +1,4 @@
-const port = process.env.PORT ?? '3008';
+const port = process.env.PORT ?? '3008'
 const response = await fetch(`http://127.0.0.1:${port}/graphql`, {
   method: 'POST',
   headers: {
@@ -7,13 +7,13 @@ const response = await fetch(`http://127.0.0.1:${port}/graphql`, {
   body: JSON.stringify({
     query: '{ __typename }',
   }),
-});
+})
 
 if (!response.ok) {
-  throw new Error(`GraphQL healthcheck returned HTTP ${response.status}`);
+  throw new Error(`GraphQL healthcheck returned HTTP ${response.status}`)
 }
 
-const payload = await response.json();
+const payload = await response.json()
 if (payload.data?.__typename !== 'Query') {
-  throw new Error('GraphQL healthcheck returned an unexpected payload');
+  throw new Error('GraphQL healthcheck returned an unexpected payload')
 }

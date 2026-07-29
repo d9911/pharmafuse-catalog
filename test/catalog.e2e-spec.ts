@@ -1,10 +1,10 @@
-import { mkdtemp, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
-import { Test } from '@nestjs/testing';
-import { DataSource } from 'typeorm';
-import { AppModule } from '../src/app.module';
+import { mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify'
+import { Test } from '@nestjs/testing'
+import { DataSource } from 'typeorm'
+import { AppModule } from '../src/app.module'
 
 const importMutation = `
   mutation ImportCatalog {
@@ -17,7 +17,7 @@ const importMutation = `
       recordErrors
     }
   }
-`;
+`
 
 const catalogQuery = `
   query Catalog {
@@ -40,51 +40,51 @@ const catalogQuery = `
       }
     }
   }
-`;
+`
 
 describe('PharmaFuse GraphQL API', () => {
-  let app: NestFastifyApplication | null = null;
-  let tempRoot: string;
+  let app: NestFastifyApplication | null = null
+  let tempRoot: string
 
   function runningApp(): NestFastifyApplication {
     if (app === null) {
-      throw new Error('Test application is not initialized');
+      throw new Error('Test application is not initialized')
     }
-    return app;
+    return app
   }
 
   beforeAll(async () => {
-    tempRoot = await mkdtemp(join(tmpdir(), 'pharmacy-catalog-e2e-'));
-    process.env.NODE_ENV = 'test';
-    process.env.DATABASE_PATH = join(tempRoot, 'catalog.sqlite');
-    process.env.SOURCE_ROOT = join(process.cwd(), 'pnarmacy');
+    tempRoot = await mkdtemp(join(tmpdir(), 'pharmacy-catalog-e2e-'))
+    process.env.NODE_ENV = 'test'
+    process.env.DATABASE_PATH = join(tempRoot, 'catalog.sqlite')
+    process.env.SOURCE_ROOT = join(process.cwd(), 'pnarmacy')
 
-    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
-    app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
-    await runningApp().init();
-    await runningApp().getHttpAdapter().getInstance().ready();
-    await runningApp().get(DataSource).runMigrations();
-  });
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile()
+    app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter())
+    await runningApp().init()
+    await runningApp().getHttpAdapter().getInstance().ready()
+    await runningApp().get(DataSource).runMigrations()
+  })
 
   afterAll(async () => {
     if (app) {
-      await app.close();
+      await app.close()
     }
     if (tempRoot) {
-      await rm(tempRoot, { recursive: true, force: true });
+      await rm(tempRoot, { recursive: true, force: true })
     }
-  });
+  })
 
   it('imports three sources and returns one normalized medicine', async () => {
     const importResponse = await runningApp().inject({
       method: 'POST',
       url: '/graphql',
       payload: { query: importMutation },
-    });
+    })
 
-    expect(importResponse.statusCode).toBe(200);
-    expect(importResponse.headers['content-type']).toMatch(/^application\/json/);
-    const importBody: unknown = JSON.parse(importResponse.body);
+    expect(importResponse.statusCode).toBe(200)
+    expect(importResponse.headers['content-type']).toMatch(/^application\/json/)
+    const importBody: unknown = JSON.parse(importResponse.body)
     expect(importBody).toEqual({
       data: {
         importCatalog: {
@@ -96,17 +96,17 @@ describe('PharmaFuse GraphQL API', () => {
           recordErrors: 0,
         },
       },
-    });
+    })
 
     const catalogResponse = await runningApp().inject({
       method: 'POST',
       url: '/graphql',
       payload: { query: catalogQuery },
-    });
+    })
 
-    expect(catalogResponse.statusCode).toBe(200);
-    expect(catalogResponse.headers['content-type']).toMatch(/^application\/json/);
-    const catalogBody: unknown = JSON.parse(catalogResponse.body);
+    expect(catalogResponse.statusCode).toBe(200)
+    expect(catalogResponse.headers['content-type']).toMatch(/^application\/json/)
+    const catalogBody: unknown = JSON.parse(catalogResponse.body)
     expect(catalogBody).toEqual({
       data: {
         catalog: [
@@ -144,19 +144,19 @@ describe('PharmaFuse GraphQL API', () => {
           },
         ],
       },
-    });
-  });
+    })
+  })
 
   it('keeps the catalog unchanged on an identical second import', async () => {
     const response = await runningApp().inject({
       method: 'POST',
       url: '/graphql',
       payload: { query: importMutation },
-    });
+    })
 
-    expect(response.statusCode).toBe(200);
-    expect(response.headers['content-type']).toMatch(/^application\/json/);
-    const body: unknown = JSON.parse(response.body);
+    expect(response.statusCode).toBe(200)
+    expect(response.headers['content-type']).toMatch(/^application\/json/)
+    const body: unknown = JSON.parse(response.body)
     expect(body).toEqual({
       data: {
         importCatalog: {
@@ -168,18 +168,18 @@ describe('PharmaFuse GraphQL API', () => {
           recordErrors: 0,
         },
       },
-    });
+    })
 
     const catalogResponse = await runningApp().inject({
       method: 'POST',
       url: '/graphql',
       payload: { query: catalogQuery },
-    });
-    expect(catalogResponse.statusCode).toBe(200);
+    })
+    expect(catalogResponse.statusCode).toBe(200)
     const catalogBody = JSON.parse(catalogResponse.body) as {
-      data: { catalog: { sources: unknown[] }[] };
-    };
-    expect(catalogBody.data.catalog).toHaveLength(1);
-    expect(catalogBody.data.catalog[0]?.sources).toHaveLength(3);
-  });
-});
+      data: { catalog: { sources: unknown[] }[] }
+    }
+    expect(catalogBody.data.catalog).toHaveLength(1)
+    expect(catalogBody.data.catalog[0]?.sources).toHaveLength(3)
+  })
+})

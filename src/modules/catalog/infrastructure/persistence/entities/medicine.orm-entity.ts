@@ -1,57 +1,57 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
-import type { DosageForm } from '../../../domain/catalog.types';
-import { sqliteBoolean } from './sqlite-boolean.transformer';
+import { Column, Entity, PrimaryColumn } from 'typeorm'
+import type { DosageForm } from '../../../domain/catalog.types'
+import { sqliteBoolean } from './sqlite-boolean.transformer'
 
 @Entity('medicines')
 export class MedicineOrmEntity {
   @PrimaryColumn('text')
-  id!: string;
+  id!: string
 
   @Column('text', { name: 'canonical_name' })
-  canonicalName!: string;
+  canonicalName!: string
 
   @Column('text', { name: 'normalized_name' })
-  normalizedName!: string;
+  normalizedName!: string
 
   @Column('text')
-  manufacturer!: string;
+  manufacturer!: string
 
   @Column('text', { name: 'normalized_manufacturer' })
-  normalizedManufacturer!: string;
+  normalizedManufacturer!: string
 
   @Column('text', { nullable: true })
-  gtin!: string | null;
+  gtin!: string | null
 
   @Column('integer', { name: 'gtin_valid', transformer: sqliteBoolean })
-  gtinValid!: boolean;
+  gtinValid!: boolean
 
   @Column('integer', { name: 'dosage_micrograms' })
-  dosageMicrograms!: number;
+  dosageMicrograms!: number
 
   @Column('text', { name: 'dosage_form' })
-  dosageForm!: DosageForm;
+  dosageForm!: DosageForm
 
   @Column('integer', { name: 'package_size' })
-  packageSize!: number;
+  packageSize!: number
 
   @Column('integer', {
     name: 'prescription_required',
     transformer: sqliteBoolean,
   })
-  prescriptionRequired!: boolean;
+  prescriptionRequired!: boolean
 
   @Column('text', { name: 'country_code' })
-  countryCode!: string;
+  countryCode!: string
 
   @Column('text', { name: 'registration_date' })
-  registrationDate!: string;
+  registrationDate!: string
 
   @Column('text', { name: 'composite_key' })
-  compositeKey!: string;
+  compositeKey!: string
 
   @Column('text', { name: 'created_at' })
-  createdAt!: string;
+  createdAt!: string
 
   @Column('text', { name: 'updated_at' })
-  updatedAt!: string;
+  updatedAt!: string
 }

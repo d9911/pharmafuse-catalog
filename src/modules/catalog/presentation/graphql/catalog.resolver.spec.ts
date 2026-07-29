@@ -1,12 +1,8 @@
-import type { ImportBatchResult } from '../../application/import-catalog.types';
-import type {
-  CatalogReadRepository,
-  ImportBatchView,
-  MedicineView,
-} from '../../application/ports/catalog-read.repository';
-import type { ImportCatalogUseCase } from '../../application/import-catalog.use-case';
-import { GetCatalogQuery } from '../../application/get-catalog.query';
-import { CatalogResolver } from './catalog.resolver';
+import type { ImportBatchResult } from '../../application/import-catalog.types'
+import type { CatalogReadRepository, ImportBatchView, MedicineView } from '../../application/ports/catalog-read.repository'
+import type { ImportCatalogUseCase } from '../../application/import-catalog.use-case'
+import { GetCatalogQuery } from '../../application/get-catalog.query'
+import { CatalogResolver } from './catalog.resolver'
 
 const medicine: MedicineView = {
   id: 'medicine-1',
@@ -51,19 +47,19 @@ const medicine: MedicineView = {
       matchStrategy: 'INVALID_GTIN_WITH_COMPOSITE',
     },
   ],
-};
+}
 
 class ResolverReadRepository implements CatalogReadRepository {
   listMedicines(): Promise<MedicineView[]> {
-    return Promise.resolve([medicine]);
+    return Promise.resolve([medicine])
   }
 
   findMedicine(): Promise<MedicineView | null> {
-    return Promise.resolve(medicine);
+    return Promise.resolve(medicine)
   }
 
   listImportBatches(): Promise<ImportBatchView[]> {
-    return Promise.resolve([]);
+    return Promise.resolve([])
   }
 }
 
@@ -79,23 +75,20 @@ class ResolverImportUseCase {
       sourceRecordsLinked: 3,
       duplicatesMerged: 2,
       recordErrors: 0,
-    });
+    })
   }
 }
 
 describe('CatalogResolver', () => {
-  const resolver = new CatalogResolver(
-    new GetCatalogQuery(new ResolverReadRepository()),
-    new ResolverImportUseCase() as ImportCatalogUseCase,
-  );
+  const resolver = new CatalogResolver(new GetCatalogQuery(new ResolverReadRepository()), new ResolverImportUseCase() as ImportCatalogUseCase)
 
   it('maps internal micrograms and provenance to the public GraphQL model', async () => {
-    const result = await resolver.catalog();
+    const result = await resolver.catalog()
 
-    expect(result).toHaveLength(1);
-    const first = result[0];
+    expect(result).toHaveLength(1)
+    const first = result[0]
     if (!first) {
-      throw new Error('Expected one medicine');
+      throw new Error('Expected one medicine')
     }
     expect(first).toMatchObject({
       id: 'medicine-1',
@@ -109,7 +102,7 @@ describe('CatalogResolver', () => {
       prescriptionRequired: false,
       countryCode: 'GB',
       registrationDate: '2023-01-15',
-    });
+    })
     expect(
       first.sources.map(({ externalId, matchStrategy }) => ({
         externalId,
@@ -119,10 +112,10 @@ describe('CatalogResolver', () => {
       { externalId: 'a-100', matchStrategy: 'NEW_RECORD' },
       { externalId: 'b-777', matchStrategy: 'INVALID_GTIN_WITH_COMPOSITE' },
       { externalId: 'c_991', matchStrategy: 'INVALID_GTIN_WITH_COMPOSITE' },
-    ]);
-    expect(first).not.toHaveProperty('normalizedName');
-    expect(first).not.toHaveProperty('normalizedManufacturer');
-  });
+    ])
+    expect(first).not.toHaveProperty('normalizedName')
+    expect(first).not.toHaveProperty('normalizedManufacturer')
+  })
 
   it('exposes import statistics from the application result', async () => {
     await expect(resolver.importCatalog()).resolves.toMatchObject({
@@ -132,6 +125,6 @@ describe('CatalogResolver', () => {
       sourceRecordsLinked: 3,
       duplicatesMerged: 2,
       recordErrors: 0,
-    });
-  });
-});
+    })
+  })
+})

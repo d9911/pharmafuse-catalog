@@ -1,9 +1,9 @@
-import { join } from 'node:path';
-import { PharmacyCReader } from './pharmacy-c.reader';
+import { join } from 'node:path'
+import { PharmacyCReader } from './pharmacy-c.reader'
 
 describe('PharmacyCReader', () => {
   it('maps the nested Pharmacy C JSON representation', async () => {
-    const reader = new PharmacyCReader(join(process.cwd(), 'pnarmacy'));
+    const reader = new PharmacyCReader(join(process.cwd(), 'pnarmacy'))
 
     await expect(reader.read()).resolves.toEqual([
       {
@@ -37,6 +37,6 @@ describe('PharmacyCReader', () => {
           },
         },
       },
-    ]);
-  });
-});
+    ])
+  })
+})

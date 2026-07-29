@@ -1,31 +1,31 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
 @Entity('source_records')
 export class SourceRecordOrmEntity {
   @PrimaryColumn('text')
-  id!: string;
+  id!: string
 
   @Column('text', { name: 'provider_id' })
-  providerId!: string;
+  providerId!: string
 
   @Column('text', { name: 'import_batch_id' })
-  importBatchId!: string;
+  importBatchId!: string
 
   @Column('text', { name: 'external_id' })
-  externalId!: string;
+  externalId!: string
 
   @Column('text', { name: 'source_file' })
-  sourceFile!: string;
+  sourceFile!: string
 
   @Column('text', { name: 'raw_payload_json' })
-  rawPayloadJson!: string;
+  rawPayloadJson!: string
 
   @Column('text', { name: 'normalized_payload_json' })
-  normalizedPayloadJson!: string;
+  normalizedPayloadJson!: string
 
   @Column('text', { name: 'payload_hash' })
-  payloadHash!: string;
+  payloadHash!: string
 
   @Column('text', { name: 'imported_at' })
-  importedAt!: string;
+  importedAt!: string
 }

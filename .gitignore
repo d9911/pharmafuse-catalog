@@ -7,4 +7,5 @@ data/*.sqlite-wal
 .env
 schema.gql
 graphify-out/
+.cache/
 .DS_Store

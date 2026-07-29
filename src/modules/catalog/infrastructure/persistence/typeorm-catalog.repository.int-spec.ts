@@ -1,10 +1,10 @@
-import { DataSource } from 'typeorm';
-import { CreatePharmacyCatalog1785283200000 } from '@/database/migrations/1785283200000-create-pharmacy-catalog';
-import type { NormalizedMedicineCandidate } from '../../domain/catalog.types';
-import { entities } from './entities';
-import { TypeOrmCatalogRepository } from './typeorm-catalog.repository';
-import { TypeOrmImportBatchRepository } from './typeorm-import-batch.repository';
-import { TypeOrmTransactionManager } from './typeorm-transaction.manager';
+import { DataSource } from 'typeorm'
+import { CreatePharmacyCatalog1785283200000 } from '@/database/migrations/1785283200000-create-pharmacy-catalog'
+import type { NormalizedMedicineCandidate } from '../../domain/catalog.types'
+import { entities } from './entities'
+import { TypeOrmCatalogRepository } from './typeorm-catalog.repository'
+import { TypeOrmImportBatchRepository } from './typeorm-import-batch.repository'
+import { TypeOrmTransactionManager } from './typeorm-transaction.manager'
 
 const candidate: NormalizedMedicineCandidate = {
   providerCode: 'pharmacy-a',
@@ -25,12 +25,12 @@ const candidate: NormalizedMedicineCandidate = {
   compositeKey: 'nurofen|reckitt benckiser|200000|TABLET|24|GB',
   rawPayloadJson: '{"id":"a-100"}',
   normalizedPayloadJson: '{"normalizedName":"nurofen"}',
-};
+}
 
-const now = '2026-07-29T10:00:00.000Z';
+const now = '2026-07-29T10:00:00.000Z'
 
 describe('PharmaFuse SQLite persistence', () => {
-  let dataSource: DataSource;
+  let dataSource: DataSource
 
   beforeEach(async () => {
     dataSource = new DataSource({
@@ -41,40 +41,40 @@ describe('PharmaFuse SQLite persistence', () => {
       migrationsRun: true,
       synchronize: false,
       prepareDatabase: (database: { pragma(statement: string): unknown }) => {
-        database.pragma('foreign_keys = ON');
-        database.pragma('journal_mode = MEMORY');
+        database.pragma('foreign_keys = ON')
+        database.pragma('journal_mode = MEMORY')
       },
-    });
-    await dataSource.initialize();
-  });
+    })
+    await dataSource.initialize()
+  })
 
   afterEach(async () => {
     if (dataSource.isInitialized) {
-      await dataSource.destroy();
+      await dataSource.destroy()
     }
-  });
+  })
 
   it('creates every auditable table through a migration', async () => {
-    const queryRunner = dataSource.createQueryRunner();
+    const queryRunner = dataSource.createQueryRunner()
 
-    await expect(queryRunner.hasTable('providers')).resolves.toBe(true);
-    await expect(queryRunner.hasTable('import_batches')).resolves.toBe(true);
-    await expect(queryRunner.hasTable('medicines')).resolves.toBe(true);
-    await expect(queryRunner.hasTable('source_records')).resolves.toBe(true);
-    await expect(queryRunner.hasTable('medicine_sources')).resolves.toBe(true);
-    await expect(queryRunner.hasTable('import_errors')).resolves.toBe(true);
-    await queryRunner.release();
-  });
+    await expect(queryRunner.hasTable('providers')).resolves.toBe(true)
+    await expect(queryRunner.hasTable('import_batches')).resolves.toBe(true)
+    await expect(queryRunner.hasTable('medicines')).resolves.toBe(true)
+    await expect(queryRunner.hasTable('source_records')).resolves.toBe(true)
+    await expect(queryRunner.hasTable('medicine_sources')).resolves.toBe(true)
+    await expect(queryRunner.hasTable('import_errors')).resolves.toBe(true)
+    await queryRunner.release()
+  })
 
   it('enforces SQLite foreign keys', async () => {
-    const rows = await dataSource.query<{ foreign_keys: number }[]>('PRAGMA foreign_keys');
+    const rows = await dataSource.query<{ foreign_keys: number }[]>('PRAGMA foreign_keys')
 
-    expect(rows).toEqual([{ foreign_keys: 1 }]);
-  });
+    expect(rows).toEqual([{ foreign_keys: 1 }])
+  })
 
   it('finds an invalid GTIN only when the composite key corroborates it', async () => {
-    const repository = new TypeOrmCatalogRepository(dataSource.manager);
-    await repository.createMedicine('medicine-1', candidate, now);
+    const repository = new TypeOrmCatalogRepository(dataSource.manager)
+    await repository.createMedicine('medicine-1', candidate, now)
 
     await expect(repository.findIdentityCandidates(candidate)).resolves.toEqual([
       {
@@ -83,21 +83,17 @@ describe('PharmaFuse SQLite persistence', () => {
         gtinValid: false,
         compositeKey: candidate.compositeKey,
       },
-    ]);
-    await expect(
-      repository.findIdentityCandidates({ ...candidate, compositeKey: 'different' }),
-    ).resolves.toEqual([]);
-  });
+    ])
+    await expect(repository.findIdentityCandidates({ ...candidate, compositeKey: 'different' })).resolves.toEqual([])
+  })
 
   it('persists one source link and returns it in the catalog projection', async () => {
-    const batchRepository = new TypeOrmImportBatchRepository(dataSource.manager);
-    const repository = new TypeOrmCatalogRepository(dataSource.manager);
-    await batchRepository.start('batch-1', now);
-    await repository.createMedicine('medicine-1', candidate, now);
+    const batchRepository = new TypeOrmImportBatchRepository(dataSource.manager)
+    const repository = new TypeOrmCatalogRepository(dataSource.manager)
+    await batchRepository.start('batch-1', now)
+    await repository.createMedicine('medicine-1', candidate, now)
 
-    await expect(
-      repository.sourceRecordExists('pharmacy-a', 'a-100', 'payload-hash'),
-    ).resolves.toBe(false);
+    await expect(repository.sourceRecordExists('pharmacy-a', 'a-100', 'payload-hash')).resolves.toBe(false)
     await repository.createSourceAndLink({
       sourceRecordId: 'source-1',
       medicineId: 'medicine-1',
@@ -106,10 +102,8 @@ describe('PharmaFuse SQLite persistence', () => {
       payloadHash: 'payload-hash',
       matchStrategy: 'NEW_RECORD',
       now,
-    });
-    await expect(
-      repository.sourceRecordExists('pharmacy-a', 'a-100', 'payload-hash'),
-    ).resolves.toBe(true);
+    })
+    await expect(repository.sourceRecordExists('pharmacy-a', 'a-100', 'payload-hash')).resolves.toBe(true)
 
     await expect(repository.listMedicines()).resolves.toEqual([
       expect.objectContaining({
@@ -123,30 +117,30 @@ describe('PharmaFuse SQLite persistence', () => {
           }),
         ],
       }),
-    ]);
-  });
+    ])
+  })
 
   it('rolls back catalog writes while retaining failed batch audit', async () => {
-    const batchRepository = new TypeOrmImportBatchRepository(dataSource.manager);
-    const transactionManager = new TypeOrmTransactionManager(dataSource);
-    await batchRepository.start('batch-1', now);
+    const batchRepository = new TypeOrmImportBatchRepository(dataSource.manager)
+    const transactionManager = new TypeOrmTransactionManager(dataSource)
+    await batchRepository.start('batch-1', now)
 
     await expect(
       transactionManager.run(async (repository) => {
-        await repository.createMedicine('rolled-back', candidate, now);
-        throw new Error('reader failed');
+        await repository.createMedicine('rolled-back', candidate, now)
+        throw new Error('reader failed')
       }),
-    ).rejects.toThrow('reader failed');
-    await batchRepository.fail('batch-1', 'Catalog import failed', now);
+    ).rejects.toThrow('reader failed')
+    await batchRepository.fail('batch-1', 'Catalog import failed', now)
 
-    const repository = new TypeOrmCatalogRepository(dataSource.manager);
-    await expect(repository.listMedicines()).resolves.toEqual([]);
+    const repository = new TypeOrmCatalogRepository(dataSource.manager)
+    await expect(repository.listMedicines()).resolves.toEqual([])
     await expect(repository.listImportBatches()).resolves.toEqual([
       expect.objectContaining({
         id: 'batch-1',
         status: 'FAILED',
         failureMessage: 'Catalog import failed',
       }),
-    ]);
-  });
-});
+    ])
+  })
+})

@@ -1,7 +1,7 @@
-import type { MigrationInterface, QueryRunner } from 'typeorm';
+import type { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class CreatePharmacyCatalog1785283200000 implements MigrationInterface {
-  name = 'CreatePharmacyCatalog1785283200000';
+  name = 'CreatePharmacyCatalog1785283200000'
 
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -11,7 +11,7 @@ export class CreatePharmacyCatalog1785283200000 implements MigrationInterface {
         name TEXT NOT NULL,
         source_file TEXT NOT NULL
       )
-    `);
+    `)
     await queryRunner.query(`
       CREATE TABLE import_batches (
         id TEXT PRIMARY KEY,
@@ -25,7 +25,7 @@ export class CreatePharmacyCatalog1785283200000 implements MigrationInterface {
         record_errors INTEGER NOT NULL DEFAULT 0,
         failure_message TEXT
       )
-    `);
+    `)
     await queryRunner.query(`
       CREATE TABLE medicines (
         id TEXT PRIMARY KEY,
@@ -46,16 +46,16 @@ export class CreatePharmacyCatalog1785283200000 implements MigrationInterface {
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       )
-    `);
+    `)
     await queryRunner.query(`
       CREATE UNIQUE INDEX uq_medicines_valid_gtin
       ON medicines(gtin)
       WHERE gtin IS NOT NULL AND gtin_valid = 1
-    `);
+    `)
     await queryRunner.query(`
       CREATE INDEX ix_medicines_composite_key
       ON medicines(composite_key)
-    `);
+    `)
     await queryRunner.query(`
       CREATE TABLE source_records (
         id TEXT PRIMARY KEY,
@@ -69,7 +69,7 @@ export class CreatePharmacyCatalog1785283200000 implements MigrationInterface {
         imported_at TEXT NOT NULL,
         UNIQUE(provider_id, external_id, payload_hash)
       )
-    `);
+    `)
     await queryRunner.query(`
       CREATE TABLE medicine_sources (
         medicine_id TEXT NOT NULL REFERENCES medicines(id),
@@ -85,7 +85,7 @@ export class CreatePharmacyCatalog1785283200000 implements MigrationInterface {
         linked_at TEXT NOT NULL,
         PRIMARY KEY(medicine_id, source_record_id)
       )
-    `);
+    `)
     await queryRunner.query(`
       CREATE TABLE import_errors (
         id TEXT PRIMARY KEY,
@@ -98,21 +98,21 @@ export class CreatePharmacyCatalog1785283200000 implements MigrationInterface {
         raw_payload_json TEXT,
         created_at TEXT NOT NULL
       )
-    `);
+    `)
     await queryRunner.query(`
       INSERT INTO providers (id, code, name, source_file) VALUES
         ('provider-a', 'pharmacy-a', 'Pharmacy A', 'pharmacy_a.json'),
         ('provider-b', 'pharmacy-b', 'Pharmacy B', 'pharmacy_b.xml'),
         ('provider-c', 'pharmacy-c', 'Pharmacy C', 'pharmacy_c.json')
-    `);
+    `)
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query('DROP TABLE import_errors');
-    await queryRunner.query('DROP TABLE medicine_sources');
-    await queryRunner.query('DROP TABLE source_records');
-    await queryRunner.query('DROP TABLE medicines');
-    await queryRunner.query('DROP TABLE import_batches');
-    await queryRunner.query('DROP TABLE providers');
+    await queryRunner.query('DROP TABLE import_errors')
+    await queryRunner.query('DROP TABLE medicine_sources')
+    await queryRunner.query('DROP TABLE source_records')
+    await queryRunner.query('DROP TABLE medicines')
+    await queryRunner.query('DROP TABLE import_batches')
+    await queryRunner.query('DROP TABLE providers')
   }
 }

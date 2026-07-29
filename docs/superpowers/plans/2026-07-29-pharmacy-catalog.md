@@ -47,46 +47,46 @@ Jest 30, Fastify `inject()`, ESLint 10, Madge 8, Graphify.
 
 ### Runtime dependencies
 
-| Package | Version | Назначение |
-|---|---:|---|
-| `@nestjs/common` | `11.1.28` | NestJS primitives |
-| `@nestjs/core` | `11.1.28` | NestJS runtime |
-| `@nestjs/platform-fastify` | `11.1.28` | Fastify HTTP adapter |
-| `@nestjs/graphql` | `13.4.2` | GraphQL Code First |
-| `@nestjs/mercurius` | `13.4.2` | Mercurius driver |
-| `@nestjs/typeorm` | `11.0.3` | Nest/TypeORM integration |
-| `@nestjs/config` | `4.0.4` | typed application configuration |
-| `graphql` | `16.14.2` | совместимая ветка по peer range `^16.11.0` |
-| `fastify` | `5.10.0` | HTTP runtime |
-| `mercurius` | `16.10.0` | GraphQL runtime and GraphiQL |
-| `typeorm` | `1.1.0` | persistence adapter and migrations |
-| `better-sqlite3` | `12.11.1` | SQLite driver, совместимый с TypeORM peer range |
-| `fast-xml-parser` | `5.10.1` | Pharmacy B XML parser |
-| `class-validator` | `0.15.1` | GraphQL argument validation |
-| `class-transformer` | `0.5.1` | Nest validation support |
-| `reflect-metadata` | `0.2.2` | decorator metadata |
-| `rxjs` | `7.8.2` | NestJS runtime dependency |
+| Package                    |   Version | Назначение                                      |
+| -------------------------- | --------: | ----------------------------------------------- |
+| `@nestjs/common`           | `11.1.28` | NestJS primitives                               |
+| `@nestjs/core`             | `11.1.28` | NestJS runtime                                  |
+| `@nestjs/platform-fastify` | `11.1.28` | Fastify HTTP adapter                            |
+| `@nestjs/graphql`          |  `13.4.2` | GraphQL Code First                              |
+| `@nestjs/mercurius`        |  `13.4.2` | Mercurius driver                                |
+| `@nestjs/typeorm`          |  `11.0.3` | Nest/TypeORM integration                        |
+| `@nestjs/config`           |   `4.0.4` | typed application configuration                 |
+| `graphql`                  | `16.14.2` | совместимая ветка по peer range `^16.11.0`      |
+| `fastify`                  |  `5.10.0` | HTTP runtime                                    |
+| `mercurius`                | `16.10.0` | GraphQL runtime and GraphiQL                    |
+| `typeorm`                  |   `1.1.0` | persistence adapter and migrations              |
+| `better-sqlite3`           | `12.11.1` | SQLite driver, совместимый с TypeORM peer range |
+| `fast-xml-parser`          |  `5.10.1` | Pharmacy B XML parser                           |
+| `class-validator`          |  `0.15.1` | GraphQL argument validation                     |
+| `class-transformer`        |   `0.5.1` | Nest validation support                         |
+| `reflect-metadata`         |   `0.2.2` | decorator metadata                              |
+| `rxjs`                     |   `7.8.2` | NestJS runtime dependency                       |
 
 ### Development dependencies
 
-| Package | Version | Назначение |
-|---|---:|---|
-| `@nestjs/cli` | `11.0.24` | build/start CLI |
-| `@nestjs/testing` | `11.1.28` | Nest test module |
-| `@types/better-sqlite3` | `7.6.13` | SQLite typings |
-| `@types/jest` | `30.0.0` | Jest typings |
-| `@types/node` | `24.13.3` | Node 24 typings |
-| `@eslint/js` | `10.0.1` | ESLint base config |
-| `eslint` | `10.8.0` | linting and import boundaries |
-| `eslint-config-prettier` | `10.1.8` | disables conflicting rules |
-| `jest` | `30.4.2` | test runner |
-| `madge` | `8.0.0` | circular dependency check |
-| `prettier` | `3.9.6` | formatting |
-| `ts-jest` | `29.4.12` | Jest TypeScript transform |
-| `ts-node` | `10.9.2` | TypeORM migration runner |
-| `tsconfig-paths` | `4.2.0` | path alias resolution |
-| `typescript` | `5.9.3` | удовлетворяет `madge ^5.4.4`, `ts-jest <7` и `typescript-eslint <6.1` |
-| `typescript-eslint` | `8.65.0` | TypeScript ESLint parser/config |
+| Package                  |   Version | Назначение                                                            |
+| ------------------------ | --------: | --------------------------------------------------------------------- |
+| `@nestjs/cli`            | `11.0.24` | build/start CLI                                                       |
+| `@nestjs/testing`        | `11.1.28` | Nest test module                                                      |
+| `@types/better-sqlite3`  |  `7.6.13` | SQLite typings                                                        |
+| `@types/jest`            |  `30.0.0` | Jest typings                                                          |
+| `@types/node`            | `24.13.3` | Node 24 typings                                                       |
+| `@eslint/js`             |  `10.0.1` | ESLint base config                                                    |
+| `eslint`                 |  `10.8.0` | linting and import boundaries                                         |
+| `eslint-config-prettier` |  `10.1.8` | disables conflicting rules                                            |
+| `jest`                   |  `30.4.2` | test runner                                                           |
+| `madge`                  |   `8.0.0` | circular dependency check                                             |
+| `prettier`               |   `3.9.6` | formatting                                                            |
+| `ts-jest`                | `29.4.12` | Jest TypeScript transform                                             |
+| `ts-node`                |  `10.9.2` | TypeORM migration runner                                              |
+| `tsconfig-paths`         |   `4.2.0` | path alias resolution                                                 |
+| `typescript`             |   `5.9.3` | удовлетворяет `madge ^5.4.4`, `ts-jest <7` и `typescript-eslint <6.1` |
+| `typescript-eslint`      |  `8.65.0` | TypeScript ESLint parser/config                                       |
 
 Не устанавливать `graphql@17.0.2`: `@nestjs/graphql@13.4.2` требует GraphQL
 `^16.11.0`. Не устанавливать `typescript@7.0.2`: `ts-jest@29.4.12` требует
@@ -303,7 +303,7 @@ adjust the plan before continuing.
 - [ ] **Step 3: Write the failing configuration tests**
 
 ```ts
-import { loadAppConfig } from './app-config';
+import { loadAppConfig } from './app-config'
 
 describe('loadAppConfig', () => {
   it('resolves paths from the project root', () => {
@@ -319,15 +319,13 @@ describe('loadAppConfig', () => {
       port: 3100,
       databasePath: expect.stringMatching(/data\/test\.sqlite$/),
       sourceRoot: expect.stringMatching(/pnarmacy$/),
-    });
-  });
+    })
+  })
 
   it('rejects an invalid port', () => {
-    expect(() => loadAppConfig({ PORT: 'zero' })).toThrow(
-      'PORT must be an integer between 1 and 65535',
-    );
-  });
-});
+    expect(() => loadAppConfig({ PORT: 'zero' })).toThrow('PORT must be an integer between 1 and 65535')
+  })
+})
 ```
 
 - [ ] **Step 4: Run the configuration test and observe the intended failure**
@@ -343,21 +341,21 @@ Expected: FAIL because `app-config.ts` does not exist.
 - [ ] **Step 5: Implement configuration without framework leakage**
 
 ```ts
-import { resolve } from 'node:path';
+import { resolve } from 'node:path'
 
-export const APP_CONFIG = Symbol('APP_CONFIG');
+export const APP_CONFIG = Symbol('APP_CONFIG')
 
 export interface AppConfig {
-  nodeEnv: string;
-  port: number;
-  databasePath: string;
-  sourceRoot: string;
+  nodeEnv: string
+  port: number
+  databasePath: string
+  sourceRoot: string
 }
 
 export function loadAppConfig(env: NodeJS.ProcessEnv): AppConfig {
-  const port = Number(env.PORT ?? 3008);
+  const port = Number(env.PORT ?? 3008)
   if (!Number.isInteger(port) || port < 1 || port > 65_535) {
-    throw new Error('PORT must be an integer between 1 and 65535');
+    throw new Error('PORT must be an integer between 1 and 65535')
   }
 
   return {
@@ -365,7 +363,7 @@ export function loadAppConfig(env: NodeJS.ProcessEnv): AppConfig {
     port,
     databasePath: resolve(process.cwd(), env.DATABASE_PATH ?? 'data/pharmacy.sqlite'),
     sourceRoot: resolve(process.cwd(), env.SOURCE_ROOT ?? 'pnarmacy'),
-  };
+  }
 }
 ```
 
@@ -441,26 +439,26 @@ In `eslint.config.mjs`, apply `no-restricted-imports` overrides:
 `main.ts`:
 
 ```ts
-import 'reflect-metadata';
-import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { APP_CONFIG, type AppConfig } from './config/app-config';
+import 'reflect-metadata'
+import { ValidationPipe } from '@nestjs/common'
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './app.module'
+import { APP_CONFIG, type AppConfig } from './config/app-config'
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule)
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
     }),
-  );
-  const config = app.get<AppConfig>(APP_CONFIG);
-  await app.listen(config.port);
+  )
+  const config = app.get<AppConfig>(APP_CONFIG)
+  await app.listen(config.port)
 }
 
-void bootstrap();
+void bootstrap()
 ```
 
 `AppModule` at this step provides `APP_CONFIG`. GraphQL and catalog imports are
@@ -500,57 +498,53 @@ one candidate and select a deterministic match strategy.
 - Produces:
 
 ```ts
-export type ProviderCode = 'pharmacy-a' | 'pharmacy-b' | 'pharmacy-c';
-export type DosageForm = 'TABLET';
-export type MatchStrategy =
-  | 'NEW_RECORD'
-  | 'VALID_GTIN'
-  | 'INVALID_GTIN_WITH_COMPOSITE'
-  | 'COMPOSITE_KEY';
+export type ProviderCode = 'pharmacy-a' | 'pharmacy-b' | 'pharmacy-c'
+export type DosageForm = 'TABLET'
+export type MatchStrategy = 'NEW_RECORD' | 'VALID_GTIN' | 'INVALID_GTIN_WITH_COMPOSITE' | 'COMPOSITE_KEY'
 
 export interface RawMedicineRecord {
-  providerCode: ProviderCode;
-  externalId: string;
-  sourceFile: string;
-  name: string;
-  manufacturer: string;
-  gtin: string | null;
-  dosageValue: number;
-  dosageUnit: string;
-  packageSize: number;
-  dosageForm: string;
-  prescriptionRequired: boolean | string;
-  country: string;
-  registrationDate: string;
-  rawPayload: unknown;
+  providerCode: ProviderCode
+  externalId: string
+  sourceFile: string
+  name: string
+  manufacturer: string
+  gtin: string | null
+  dosageValue: number
+  dosageUnit: string
+  packageSize: number
+  dosageForm: string
+  prescriptionRequired: boolean | string
+  country: string
+  registrationDate: string
+  rawPayload: unknown
 }
 
 export interface NormalizedMedicineCandidate {
-  providerCode: ProviderCode;
-  externalId: string;
-  sourceFile: string;
-  canonicalName: string;
-  normalizedName: string;
-  manufacturer: string;
-  normalizedManufacturer: string;
-  gtin: string | null;
-  gtinValid: boolean;
-  dosageMicrograms: number;
-  dosageForm: DosageForm;
-  packageSize: number;
-  prescriptionRequired: boolean;
-  countryCode: 'GB';
-  registrationDate: string;
-  compositeKey: string;
-  rawPayloadJson: string;
-  normalizedPayloadJson: string;
+  providerCode: ProviderCode
+  externalId: string
+  sourceFile: string
+  canonicalName: string
+  normalizedName: string
+  manufacturer: string
+  normalizedManufacturer: string
+  gtin: string | null
+  gtinValid: boolean
+  dosageMicrograms: number
+  dosageForm: DosageForm
+  packageSize: number
+  prescriptionRequired: boolean
+  countryCode: 'GB'
+  registrationDate: string
+  compositeKey: string
+  rawPayloadJson: string
+  normalizedPayloadJson: string
 }
 
 export interface ExistingMedicineIdentity {
-  id: string;
-  gtin: string | null;
-  gtinValid: boolean;
-  compositeKey: string;
+  id: string
+  gtin: string | null
+  gtinValid: boolean
+  compositeKey: string
 }
 ```
 
@@ -561,27 +555,27 @@ export interface ExistingMedicineIdentity {
 - [ ] **Step 1: Write GTIN tests**
 
 ```ts
-import { normalizeGtin } from './gtin';
+import { normalizeGtin } from './gtin'
 
 describe('normalizeGtin', () => {
   it('preserves a leading zero and strips separators', () => {
     expect(normalizeGtin('0505-0123-4567-89')).toEqual({
       value: '05050123456789',
       valid: false,
-    });
-  });
+    })
+  })
 
   it('validates the calculated check digit', () => {
     expect(normalizeGtin('4006381333931')).toEqual({
       value: '4006381333931',
       valid: true,
-    });
-  });
+    })
+  })
 
   it('does not fabricate an identifier', () => {
-    expect(normalizeGtin(null)).toEqual({ value: null, valid: false });
-  });
-});
+    expect(normalizeGtin(null)).toEqual({ value: null, valid: false })
+  })
+})
 ```
 
 - [ ] **Step 2: Run and confirm the GTIN test fails**
@@ -597,26 +591,24 @@ Expected: FAIL because `normalizeGtin` is missing.
 - [ ] **Step 3: Implement GTIN normalization and GS1 check**
 
 ```ts
-const GTIN_LENGTHS = new Set([8, 12, 13, 14]);
+const GTIN_LENGTHS = new Set([8, 12, 13, 14])
 
-export function normalizeGtin(
-  input: string | null,
-): { value: string | null; valid: boolean } {
-  if (input === null) return { value: null, valid: false };
+export function normalizeGtin(input: string | null): { value: string | null; valid: boolean } {
+  if (input === null) return { value: null, valid: false }
 
-  const value = input.replace(/[^0-9]/g, '');
-  if (!GTIN_LENGTHS.has(value.length)) return { value, valid: false };
+  const value = input.replace(/[^0-9]/g, '')
+  if (!GTIN_LENGTHS.has(value.length)) return { value, valid: false }
 
-  const supplied = Number(value.at(-1));
-  const body = value.slice(0, -1);
-  let sum = 0;
+  const supplied = Number(value.at(-1))
+  const body = value.slice(0, -1)
+  let sum = 0
 
   for (let index = body.length - 1, position = 1; index >= 0; index -= 1, position += 1) {
-    sum += Number(body[index]) * (position % 2 === 1 ? 3 : 1);
+    sum += Number(body[index]) * (position % 2 === 1 ? 3 : 1)
   }
 
-  const calculated = (10 - (sum % 10)) % 10;
-  return { value, valid: calculated === supplied };
+  const calculated = (10 - (sum % 10)) % 10
+  return { value, valid: calculated === supplied }
 }
 ```
 
@@ -626,26 +618,12 @@ Construct three `RawMedicineRecord` values corresponding to A, B and C, then
 assert:
 
 ```ts
-const candidates = records.map(normalizeMedicine);
+const candidates = records.map(normalizeMedicine)
 
-expect(candidates.map((item) => item.normalizedName)).toEqual([
-  'nurofen',
-  'nurofen',
-  'nurofen',
-]);
-expect(candidates.map((item) => item.normalizedManufacturer)).toEqual([
-  'reckitt benckiser',
-  'reckitt benckiser',
-  'reckitt benckiser',
-]);
-expect(new Set(candidates.map((item) => item.compositeKey))).toEqual(
-  new Set(['nurofen|reckitt benckiser|200000|TABLET|24|GB']),
-);
-expect(candidates.map((item) => item.registrationDate)).toEqual([
-  '2023-01-15',
-  '2023-01-15',
-  '2023-01-15',
-]);
+expect(candidates.map((item) => item.normalizedName)).toEqual(['nurofen', 'nurofen', 'nurofen'])
+expect(candidates.map((item) => item.normalizedManufacturer)).toEqual(['reckitt benckiser', 'reckitt benckiser', 'reckitt benckiser'])
+expect(new Set(candidates.map((item) => item.compositeKey))).toEqual(new Set(['nurofen|reckitt benckiser|200000|TABLET|24|GB']))
+expect(candidates.map((item) => item.registrationDate)).toEqual(['2023-01-15', '2023-01-15', '2023-01-15'])
 ```
 
 Also assert that unknown `dosageUnit`, `dosageForm`, `country` and
@@ -657,19 +635,19 @@ Use local pure functions:
 
 ```ts
 function normalizeText(value: string): string {
-  return value.normalize('NFKC').toLowerCase().trim().replace(/\s+/g, ' ');
+  return value.normalize('NFKC').toLowerCase().trim().replace(/\s+/g, ' ')
 }
 
 function dosageToMicrograms(value: number, unit: string): number {
-  const normalizedUnit = normalizeText(unit);
+  const normalizedUnit = normalizeText(unit)
   if (normalizedUnit !== 'mg') {
-    throw new Error(`UNSUPPORTED_DOSAGE_UNIT:${unit}`);
+    throw new Error(`UNSUPPORTED_DOSAGE_UNIT:${unit}`)
   }
-  const micrograms = value * 1_000;
+  const micrograms = value * 1_000
   if (!Number.isSafeInteger(micrograms) || micrograms <= 0) {
-    throw new Error(`INVALID_DOSAGE:${value} ${unit}`);
+    throw new Error(`INVALID_DOSAGE:${value} ${unit}`)
   }
-  return micrograms;
+  return micrograms
 }
 
 function normalizeManufacturer(value: string): string {
@@ -677,7 +655,7 @@ function normalizeManufacturer(value: string): string {
     .replace(/[.,]/g, ' ')
     .split(/\s+/)
     .filter((token) => !['ltd', 'limited', 'healthcare'].includes(token))
-    .join(' ');
+    .join(' ')
 }
 ```
 
@@ -720,8 +698,8 @@ it.each([
     expected: { medicineId: null, strategy: 'NEW_RECORD' },
   },
 ])('selects $expected.strategy', ({ candidate, existing, expected }) => {
-  expect(selectMatch(candidate, existing)).toEqual(expected);
-});
+  expect(selectMatch(candidate, existing)).toEqual(expected)
+})
 ```
 
 - [ ] **Step 7: Implement matcher precedence and verify the domain**
@@ -760,11 +738,11 @@ and return `RawMedicineRecord[]`.
 **Interfaces:**
 
 ```ts
-export const SOURCE_READERS = Symbol('SOURCE_READERS');
+export const SOURCE_READERS = Symbol('SOURCE_READERS')
 
 export interface SourceReader {
-  readonly providerCode: ProviderCode;
-  read(): Promise<RawMedicineRecord[]>;
+  readonly providerCode: ProviderCode
+  read(): Promise<RawMedicineRecord[]>
 }
 ```
 
@@ -774,10 +752,10 @@ relative filename.
 - [ ] **Step 1: Write Pharmacy A fixture test**
 
 ```ts
-const reader = new PharmacyAReader(fixtureRoot);
-const records = await reader.read();
+const reader = new PharmacyAReader(fixtureRoot)
+const records = await reader.read()
 
-expect(records).toHaveLength(1);
+expect(records).toHaveLength(1)
 expect(records[0]).toMatchObject({
   providerCode: 'pharmacy-a',
   externalId: 'a-100',
@@ -791,7 +769,7 @@ expect(records[0]).toMatchObject({
   prescriptionRequired: false,
   country: 'GB',
   registrationDate: '2023-01-15',
-});
+})
 ```
 
 - [ ] **Step 2: Implement Pharmacy A JSON-array reader**
@@ -819,7 +797,7 @@ expect((await reader.read())[0]).toMatchObject({
   prescriptionRequired: 'false',
   country: 'United Kingdom',
   registrationDate: '15.01.2023',
-});
+})
 ```
 
 Configure `XMLParser`:
@@ -829,20 +807,20 @@ new XMLParser({
   ignoreAttributes: false,
   parseTagValue: false,
   trimValues: true,
-});
+})
 ```
 
 Keeping `parseTagValue: false` prevents accidental coercion of external IDs,
 booleans and leading-zero identifiers. Parse dosage with:
 
 ```ts
-const dosageMatch = dosage.match(/^(\d+(?:\.\d+)?)\s*([A-Za-z]+)$/);
+const dosageMatch = dosage.match(/^(\d+(?:\.\d+)?)\s*([A-Za-z]+)$/)
 ```
 
 Parse pack with:
 
 ```ts
-const packMatch = pack.match(/^(\d+)\s+(.+)$/);
+const packMatch = pack.match(/^(\d+)\s+(.+)$/)
 ```
 
 - [ ] **Step 4: Write and implement Pharmacy C nested JSON reader**
@@ -863,7 +841,7 @@ expect((await reader.read())[0]).toMatchObject({
   prescriptionRequired: 'no',
   country: 'UK',
   registrationDate: '2023/01/15',
-});
+})
 ```
 
 Validate `items` is an array and validate every nested object before reading its
@@ -912,33 +890,33 @@ integration tests prove constraints and read projections.
 **Interfaces:**
 
 ```ts
-export const CATALOG_READ_REPOSITORY = Symbol('CATALOG_READ_REPOSITORY');
-export const CATALOG_WRITE_REPOSITORY = Symbol('CATALOG_WRITE_REPOSITORY');
-export const IMPORT_BATCH_REPOSITORY = Symbol('IMPORT_BATCH_REPOSITORY');
-export const TRANSACTION_MANAGER = Symbol('TRANSACTION_MANAGER');
+export const CATALOG_READ_REPOSITORY = Symbol('CATALOG_READ_REPOSITORY')
+export const CATALOG_WRITE_REPOSITORY = Symbol('CATALOG_WRITE_REPOSITORY')
+export const IMPORT_BATCH_REPOSITORY = Symbol('IMPORT_BATCH_REPOSITORY')
+export const TRANSACTION_MANAGER = Symbol('TRANSACTION_MANAGER')
 
 export interface CatalogWriteRepository {
-  findIdentityCandidates(candidate: NormalizedMedicineCandidate): Promise<ExistingMedicineIdentity[]>;
-  createMedicine(candidate: NormalizedMedicineCandidate, now: string): Promise<string>;
-  sourceRecordExists(providerCode: ProviderCode, externalId: string, payloadHash: string): Promise<boolean>;
-  createSourceAndLink(input: CreateSourceAndLinkInput): Promise<void>;
-  createImportError(input: CreateImportErrorInput): Promise<void>;
+  findIdentityCandidates(candidate: NormalizedMedicineCandidate): Promise<ExistingMedicineIdentity[]>
+  createMedicine(candidate: NormalizedMedicineCandidate, now: string): Promise<string>
+  sourceRecordExists(providerCode: ProviderCode, externalId: string, payloadHash: string): Promise<boolean>
+  createSourceAndLink(input: CreateSourceAndLinkInput): Promise<void>
+  createImportError(input: CreateImportErrorInput): Promise<void>
 }
 
 export interface ImportBatchRepository {
-  start(batchId: string, startedAt: string): Promise<void>;
-  complete(batchId: string, stats: ImportStats, finishedAt: string): Promise<void>;
-  fail(batchId: string, message: string, finishedAt: string): Promise<void>;
+  start(batchId: string, startedAt: string): Promise<void>
+  complete(batchId: string, stats: ImportStats, finishedAt: string): Promise<void>
+  fail(batchId: string, message: string, finishedAt: string): Promise<void>
 }
 
 export interface CatalogReadRepository {
-  listMedicines(): Promise<MedicineView[]>;
-  findMedicine(id: string): Promise<MedicineView | null>;
-  listImportBatches(): Promise<ImportBatchView[]>;
+  listMedicines(): Promise<MedicineView[]>
+  findMedicine(id: string): Promise<MedicineView | null>
+  listImportBatches(): Promise<ImportBatchView[]>
 }
 
 export interface TransactionManager {
-  run<T>(work: (repository: CatalogWriteRepository) => Promise<T>): Promise<T>;
+  run<T>(work: (repository: CatalogWriteRepository) => Promise<T>): Promise<T>
 }
 ```
 
@@ -947,12 +925,12 @@ export interface TransactionManager {
 Use a unique SQLite file inside `mkdtemp()` and assert:
 
 ```ts
-expect(await queryRunner.hasTable('providers')).toBe(true);
-expect(await queryRunner.hasTable('import_batches')).toBe(true);
-expect(await queryRunner.hasTable('medicines')).toBe(true);
-expect(await queryRunner.hasTable('source_records')).toBe(true);
-expect(await queryRunner.hasTable('medicine_sources')).toBe(true);
-expect(await queryRunner.hasTable('import_errors')).toBe(true);
+expect(await queryRunner.hasTable('providers')).toBe(true)
+expect(await queryRunner.hasTable('import_batches')).toBe(true)
+expect(await queryRunner.hasTable('medicines')).toBe(true)
+expect(await queryRunner.hasTable('source_records')).toBe(true)
+expect(await queryRunner.hasTable('medicine_sources')).toBe(true)
+expect(await queryRunner.hasTable('import_errors')).toBe(true)
 ```
 
 Also query `PRAGMA foreign_keys` and expect `1`.
@@ -991,13 +969,13 @@ providers
 `data-source.ts`:
 
 ```ts
-import 'reflect-metadata';
-import { DataSource } from 'typeorm';
-import { loadAppConfig } from '@/config/app-config';
-import { entities } from '@/modules/catalog/infrastructure/persistence/entities';
-import { CreatePharmacyCatalog1785283200000 } from './migrations/1785283200000-create-pharmacy-catalog';
+import 'reflect-metadata'
+import { DataSource } from 'typeorm'
+import { loadAppConfig } from '@/config/app-config'
+import { entities } from '@/modules/catalog/infrastructure/persistence/entities'
+import { CreatePharmacyCatalog1785283200000 } from './migrations/1785283200000-create-pharmacy-catalog'
 
-const config = loadAppConfig(process.env);
+const config = loadAppConfig(process.env)
 
 export default new DataSource({
   type: 'better-sqlite3',
@@ -1007,10 +985,10 @@ export default new DataSource({
   synchronize: false,
   migrationsRun: false,
   prepareDatabase: (database) => {
-    database.pragma('foreign_keys = ON');
-    database.pragma('journal_mode = WAL');
+    database.pragma('foreign_keys = ON')
+    database.pragma('journal_mode = WAL')
   },
-});
+})
 ```
 
 In tests use `journal_mode = MEMORY` rather than WAL for temporary databases.
@@ -1024,12 +1002,12 @@ decorators. Map SQLite booleans using integer transformer:
 ```ts
 export const sqliteBoolean = {
   to(value: boolean): number {
-    return value ? 1 : 0;
+    return value ? 1 : 0
   },
   from(value: number): boolean {
-    return value === 1;
+    return value === 1
   },
-};
+}
 ```
 
 - [ ] **Step 5: Write repository behavior tests**
@@ -1049,7 +1027,7 @@ The uniqueness test performs two identical inserts and expects the second
 operation to be detected by `sourceRecordExists`, leaving:
 
 ```ts
-expect(await countRows('source_records')).toBe(1);
+expect(await countRows('source_records')).toBe(1)
 ```
 
 - [ ] **Step 6: Implement repositories and transaction scoping**
@@ -1058,9 +1036,9 @@ expect(await countRows('source_records')).toBe(1);
 
 ```ts
 return this.dataSource.transaction(async (entityManager) => {
-  const repository = new TypeOrmCatalogRepository(entityManager);
-  return work(repository);
-});
+  const repository = new TypeOrmCatalogRepository(entityManager)
+  return work(repository)
+})
 ```
 
 Do not inject a global TypeORM repository into the transaction callback.
@@ -1100,18 +1078,18 @@ transaction and returns auditable statistics.
 
 ```ts
 export interface ImportStats {
-  providerRecordsRead: number;
-  medicinesCreated: number;
-  sourceRecordsLinked: number;
-  duplicatesMerged: number;
-  recordErrors: number;
+  providerRecordsRead: number
+  medicinesCreated: number
+  sourceRecordsLinked: number
+  duplicatesMerged: number
+  recordErrors: number
 }
 
 export interface ImportBatchResult extends ImportStats {
-  id: string;
-  status: 'COMPLETED';
-  startedAt: string;
-  finishedAt: string;
+  id: string
+  status: 'COMPLETED'
+  startedAt: string
+  finishedAt: string
 }
 
 export class ImportCatalogUseCase {
@@ -1121,9 +1099,9 @@ export class ImportCatalogUseCase {
     importBatchRepository: ImportBatchRepository,
     clock: () => Date,
     createId: () => string,
-  );
+  )
 
-  execute(): Promise<ImportBatchResult>;
+  execute(): Promise<ImportBatchResult>
 }
 ```
 
@@ -1140,9 +1118,9 @@ expect(await useCase.execute()).toMatchObject({
   sourceRecordsLinked: 3,
   duplicatesMerged: 2,
   recordErrors: 0,
-});
-expect(repository.medicines).toHaveLength(1);
-expect(repository.sourceRecords).toHaveLength(3);
+})
+expect(repository.medicines).toHaveLength(1)
+expect(repository.sourceRecords).toHaveLength(3)
 ```
 
 - [ ] **Step 2: Write the idempotency test**
@@ -1151,15 +1129,15 @@ Execute the same use case twice against the same repository double. After the
 second run:
 
 ```ts
-expect(repository.medicines).toHaveLength(1);
-expect(repository.sourceRecords).toHaveLength(3);
+expect(repository.medicines).toHaveLength(1)
+expect(repository.sourceRecords).toHaveLength(3)
 expect(secondRun).toMatchObject({
   providerRecordsRead: 3,
   medicinesCreated: 0,
   sourceRecordsLinked: 0,
   duplicatesMerged: 0,
   recordErrors: 0,
-});
+})
 ```
 
 `providerRecordsRead` remains `3` because the readers read three records; the
@@ -1189,15 +1167,15 @@ Create a local recursive stable serializer:
 
 ```ts
 function stableValue(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(stableValue);
+  if (Array.isArray(value)) return value.map(stableValue)
   if (value !== null && typeof value === 'object') {
     return Object.fromEntries(
       Object.entries(value)
         .sort(([left], [right]) => left.localeCompare(right))
         .map(([key, nested]) => [key, stableValue(nested)]),
-    );
+    )
   }
-  return value;
+  return value
 }
 ```
 
@@ -1206,7 +1184,7 @@ Then calculate:
 ```ts
 const payloadHash = createHash('sha256')
   .update(`${providerCode}\n${externalId}\n${JSON.stringify(stableValue(rawPayload))}`)
-  .digest('hex');
+  .digest('hex')
 ```
 
 - [ ] **Step 5: Implement the orchestration in explicit order**
@@ -1312,10 +1290,10 @@ Expose dosage as:
 @ObjectType()
 export class DosageModel {
   @Field(() => Float)
-  value!: number;
+  value!: number
 
   @Field()
-  unit!: 'mg';
+  unit!: 'mg'
 }
 ```
 
@@ -1350,24 +1328,22 @@ export class CatalogResolver {
 
   @Query(() => [MedicineModel])
   catalog(): Promise<MedicineModel[]> {
-    return this.getCatalog.list().then((items) => items.map(toMedicineModel));
+    return this.getCatalog.list().then((items) => items.map(toMedicineModel))
   }
 
   @Query(() => MedicineModel, { nullable: true })
   medicine(@Args('id', { type: () => ID }) id: string): Promise<MedicineModel | null> {
-    return this.getCatalog.findById(id).then((item) =>
-      item === null ? null : toMedicineModel(item),
-    );
+    return this.getCatalog.findById(id).then((item) => (item === null ? null : toMedicineModel(item)))
   }
 
   @Query(() => [ImportBatchModel])
   importBatches(): Promise<ImportBatchModel[]> {
-    return this.getCatalog.listImportBatches();
+    return this.getCatalog.listImportBatches()
   }
 
   @Mutation(() => ImportBatchModel)
   importCatalog(): Promise<ImportBatchModel> {
-    return this.importCatalogUseCase.execute();
+    return this.importCatalogUseCase.execute()
   }
 }
 ```
@@ -1441,10 +1417,10 @@ file → adapter → normalization → deduplication → persistence → GraphQL
 Before creating `AppModule`, set:
 
 ```ts
-const tempRoot = await mkdtemp(join(tmpdir(), 'pharmacy-catalog-e2e-'));
-process.env.NODE_ENV = 'test';
-process.env.DATABASE_PATH = join(tempRoot, 'catalog.sqlite');
-process.env.SOURCE_ROOT = join(process.cwd(), 'pnarmacy');
+const tempRoot = await mkdtemp(join(tmpdir(), 'pharmacy-catalog-e2e-'))
+process.env.NODE_ENV = 'test'
+process.env.DATABASE_PATH = join(tempRoot, 'catalog.sqlite')
+process.env.SOURCE_ROOT = join(process.cwd(), 'pnarmacy')
 ```
 
 Run migrations before `app.init()`. In `afterAll`, close Nest and TypeORM
@@ -1509,7 +1485,7 @@ query Catalog {
 Expected key facts:
 
 ```ts
-expect(body.data.catalog).toHaveLength(1);
+expect(body.data.catalog).toHaveLength(1)
 expect(body.data.catalog[0]).toMatchObject({
   canonicalName: 'Nurofen 200 mg tablets',
   manufacturer: 'Reckitt Benckiser',
@@ -1521,10 +1497,9 @@ expect(body.data.catalog[0]).toMatchObject({
   prescriptionRequired: false,
   countryCode: 'GB',
   registrationDate: '2023-01-15',
-});
-expect(body.data.catalog[0].sources).toHaveLength(3);
-expect(body.data.catalog[0].sources.map((source) => source.externalId).sort())
-  .toEqual(['a-100', 'b-777', 'c_991']);
+})
+expect(body.data.catalog[0].sources).toHaveLength(3)
+expect(body.data.catalog[0].sources.map((source) => source.externalId).sort()).toEqual(['a-100', 'b-777', 'c_991'])
 ```
 
 - [ ] **Step 4: Prove idempotency over GraphQL**
@@ -1548,8 +1523,8 @@ Query `catalog` again and assert one medicine and three sources remain.
 For every GraphQL request:
 
 ```ts
-expect(response.headers['content-type']).toMatch(/^application\/json/);
-expect(response.status).toBe(200);
+expect(response.headers['content-type']).toMatch(/^application\/json/)
+expect(response.status).toBe(200)
 ```
 
 - [ ] **Step 6: Run e2e**
@@ -1697,19 +1672,19 @@ Verify from current outputs:
 
 ### Spec coverage
 
-| Requirement | Implemented by |
-|---|---|
-| Read all provided sources | Tasks 3, 5, 7 |
-| Normalize to one model | Task 2 |
-| Merge duplicates | Tasks 2, 5 |
-| Preserve every source | Tasks 4, 5 |
-| JSON catalog output | Tasks 6, 7 |
-| Verification method | Tasks 2–8 |
-| NestJS + TypeScript | Task 1 |
-| GraphQL preview | Tasks 6–8 |
-| SQLite storage | Task 4 |
-| Clean Architecture / DDD-lite | Tasks 1–6 |
-| Graphify workflow | Task 8 |
+| Requirement                   | Implemented by |
+| ----------------------------- | -------------- |
+| Read all provided sources     | Tasks 3, 5, 7  |
+| Normalize to one model        | Task 2         |
+| Merge duplicates              | Tasks 2, 5     |
+| Preserve every source         | Tasks 4, 5     |
+| JSON catalog output           | Tasks 6, 7     |
+| Verification method           | Tasks 2–8      |
+| NestJS + TypeScript           | Task 1         |
+| GraphQL preview               | Tasks 6–8      |
+| SQLite storage                | Task 4         |
+| Clean Architecture / DDD-lite | Tasks 1–6      |
+| Graphify workflow             | Task 8         |
 
 ### Type consistency
 

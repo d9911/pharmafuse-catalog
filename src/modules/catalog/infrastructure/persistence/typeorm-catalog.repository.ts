@@ -1,78 +1,51 @@
-import type { EntityManager, FindOptionsWhere } from 'typeorm';
-import type {
-  CatalogReadRepository,
-  ImportBatchView,
-  MedicineSourceView,
-  MedicineView,
-} from '../../application/ports/catalog-read.repository';
-import type {
-  CatalogWriteRepository,
-  CreateImportErrorInput,
-  CreateSourceAndLinkInput,
-} from '../../application/ports/catalog-write.repository';
-import type {
-  ExistingMedicineIdentity,
-  MatchStrategy,
-  NormalizedMedicineCandidate,
-  ProviderCode,
-} from '../../domain/catalog.types';
-import {
-  ImportBatchOrmEntity,
-  ImportErrorOrmEntity,
-  MedicineOrmEntity,
-  MedicineSourceOrmEntity,
-  ProviderOrmEntity,
-  SourceRecordOrmEntity,
-} from './entities';
+import type { EntityManager, FindOptionsWhere } from 'typeorm'
+import type { CatalogReadRepository, ImportBatchView, MedicineSourceView, MedicineView } from '../../application/ports/catalog-read.repository'
+import type { CatalogWriteRepository, CreateImportErrorInput, CreateSourceAndLinkInput } from '../../application/ports/catalog-write.repository'
+import type { ExistingMedicineIdentity, MatchStrategy, NormalizedMedicineCandidate, ProviderCode } from '../../domain/catalog.types'
+import { ImportBatchOrmEntity, ImportErrorOrmEntity, MedicineOrmEntity, MedicineSourceOrmEntity, ProviderOrmEntity, SourceRecordOrmEntity } from './entities'
 
 interface SourceProjectionRow {
-  id: string;
-  medicineId: string;
-  providerCode: ProviderCode;
-  externalId: string;
-  sourceFile: string;
-  rawPayloadJson: string;
-  normalizedPayloadJson: string;
-  matchStrategy: MatchStrategy;
+  id: string
+  medicineId: string
+  providerCode: ProviderCode
+  externalId: string
+  sourceFile: string
+  rawPayloadJson: string
+  normalizedPayloadJson: string
+  matchStrategy: MatchStrategy
 }
 
 export class TypeOrmCatalogRepository implements CatalogWriteRepository, CatalogReadRepository {
   constructor(private readonly manager: EntityManager) {}
 
-  async findIdentityCandidates(
-    candidate: NormalizedMedicineCandidate,
-  ): Promise<ExistingMedicineIdentity[]> {
-    let where: FindOptionsWhere<MedicineOrmEntity>;
+  async findIdentityCandidates(candidate: NormalizedMedicineCandidate): Promise<ExistingMedicineIdentity[]> {
+    let where: FindOptionsWhere<MedicineOrmEntity>
 
     if (candidate.gtin !== null && candidate.gtinValid) {
-      where = { gtin: candidate.gtin, gtinValid: true };
+      where = { gtin: candidate.gtin, gtinValid: true }
     } else if (candidate.gtin !== null) {
       where = {
         gtin: candidate.gtin,
         gtinValid: false,
         compositeKey: candidate.compositeKey,
-      };
+      }
     } else {
-      where = { compositeKey: candidate.compositeKey };
+      where = { compositeKey: candidate.compositeKey }
     }
 
     const matches = await this.manager.getRepository(MedicineOrmEntity).find({
       where,
       order: { createdAt: 'ASC', id: 'ASC' },
-    });
+    })
     return matches.map(({ id, gtin, gtinValid, compositeKey }) => ({
       id,
       gtin,
       gtinValid,
       compositeKey,
-    }));
+    }))
   }
 
-  async createMedicine(
-    id: string,
-    candidate: NormalizedMedicineCandidate,
-    now: string,
-  ): Promise<void> {
+  async createMedicine(id: string, candidate: NormalizedMedicineCandidate, now: string): Promise<void> {
     await this.manager.getRepository(MedicineOrmEntity).insert({
       id,
       canonicalName: candidate.canonicalName,
@@ -90,24 +63,20 @@ export class TypeOrmCatalogRepository implements CatalogWriteRepository, Catalog
       compositeKey: candidate.compositeKey,
       createdAt: now,
       updatedAt: now,
-    });
+    })
   }
 
-  async sourceRecordExists(
-    providerCode: ProviderCode,
-    externalId: string,
-    payloadHash: string,
-  ): Promise<boolean> {
-    const provider = await this.findProvider(providerCode);
+  async sourceRecordExists(providerCode: ProviderCode, externalId: string, payloadHash: string): Promise<boolean> {
+    const provider = await this.findProvider(providerCode)
     return (
       (await this.manager.getRepository(SourceRecordOrmEntity).count({
         where: { providerId: provider.id, externalId, payloadHash },
       })) > 0
-    );
+    )
   }
 
   async createSourceAndLink(input: CreateSourceAndLinkInput): Promise<void> {
-    const provider = await this.findProvider(input.candidate.providerCode);
+    const provider = await this.findProvider(input.candidate.providerCode)
     await this.manager.getRepository(SourceRecordOrmEntity).insert({
       id: input.sourceRecordId,
       providerId: provider.id,
@@ -118,13 +87,13 @@ export class TypeOrmCatalogRepository implements CatalogWriteRepository, Catalog
       normalizedPayloadJson: input.candidate.normalizedPayloadJson,
       payloadHash: input.payloadHash,
       importedAt: input.now,
-    });
+    })
     await this.manager.getRepository(MedicineSourceOrmEntity).insert({
       medicineId: input.medicineId,
       sourceRecordId: input.sourceRecordId,
       matchStrategy: input.matchStrategy,
       linkedAt: input.now,
-    });
+    })
   }
 
   async createImportError(input: CreateImportErrorInput): Promise<void> {
@@ -138,13 +107,13 @@ export class TypeOrmCatalogRepository implements CatalogWriteRepository, Catalog
       message: input.message,
       rawPayloadJson: input.rawPayloadJson,
       createdAt: input.now,
-    });
+    })
   }
 
   async listMedicines(): Promise<MedicineView[]> {
     const medicines = await this.manager.getRepository(MedicineOrmEntity).find({
       order: { createdAt: 'ASC', id: 'ASC' },
-    });
+    })
     const sourceRowsValue: unknown = await this.manager.query(`
       SELECT
         sr.id AS id,
@@ -159,8 +128,8 @@ export class TypeOrmCatalogRepository implements CatalogWriteRepository, Catalog
       JOIN source_records sr ON sr.id = ms.source_record_id
       JOIN providers p ON p.id = sr.provider_id
       ORDER BY ms.linked_at ASC, sr.id ASC
-    `);
-    const sourceRows = sourceRowsValue as SourceProjectionRow[];
+    `)
+    const sourceRows = sourceRowsValue as SourceProjectionRow[]
 
     return medicines.map((medicine) =>
       this.toMedicineView(
@@ -177,18 +146,18 @@ export class TypeOrmCatalogRepository implements CatalogWriteRepository, Catalog
             matchStrategy: source.matchStrategy,
           })),
       ),
-    );
+    )
   }
 
   async findMedicine(id: string): Promise<MedicineView | null> {
-    const medicines = await this.listMedicines();
-    return medicines.find((medicine) => medicine.id === id) ?? null;
+    const medicines = await this.listMedicines()
+    return medicines.find((medicine) => medicine.id === id) ?? null
   }
 
   async listImportBatches(): Promise<ImportBatchView[]> {
     const batches = await this.manager.getRepository(ImportBatchOrmEntity).find({
       order: { startedAt: 'DESC', id: 'ASC' },
-    });
+    })
     return batches.map((batch): ImportBatchView => ({
       id: batch.id,
       status: batch.status,
@@ -200,17 +169,15 @@ export class TypeOrmCatalogRepository implements CatalogWriteRepository, Catalog
       duplicatesMerged: batch.duplicatesMerged,
       recordErrors: batch.recordErrors,
       failureMessage: batch.failureMessage,
-    }));
+    }))
   }
 
   private async findProvider(providerCode: ProviderCode): Promise<ProviderOrmEntity> {
-    const provider = await this.manager
-      .getRepository(ProviderOrmEntity)
-      .findOneBy({ code: providerCode });
+    const provider = await this.manager.getRepository(ProviderOrmEntity).findOneBy({ code: providerCode })
     if (!provider) {
-      throw new Error(`PROVIDER_NOT_CONFIGURED:${providerCode}`);
+      throw new Error(`PROVIDER_NOT_CONFIGURED:${providerCode}`)
     }
-    return provider;
+    return provider
   }
 
   private toMedicineView(medicine: MedicineOrmEntity, sources: MedicineSourceView[]): MedicineView {
@@ -229,6 +196,6 @@ export class TypeOrmCatalogRepository implements CatalogWriteRepository, Catalog
       countryCode: medicine.countryCode,
       registrationDate: medicine.registrationDate,
       sources,
-    };
+    }
   }
 }

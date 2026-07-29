@@ -1,5 +1,5 @@
-import type { RawMedicineRecord } from './catalog.types';
-import { normalizeMedicine } from './medicine-normalizer';
+import type { RawMedicineRecord } from './catalog.types'
+import { normalizeMedicine } from './medicine-normalizer'
 
 const rawRecords = [
   {
@@ -50,31 +50,23 @@ const rawRecords = [
     registrationDate: '2023/01/15',
     rawPayload: { product_uid: 'c_991' },
   },
-] as const satisfies readonly RawMedicineRecord[];
+] as const satisfies readonly RawMedicineRecord[]
 
 describe('normalizeMedicine', () => {
   it('produces one deterministic identity for all three provider variants', () => {
-    const candidates = rawRecords.map(normalizeMedicine);
+    const candidates = rawRecords.map(normalizeMedicine)
 
-    expect(candidates.map((item) => item.normalizedName)).toEqual([
-      'nurofen',
-      'nurofen',
-      'nurofen',
-    ]);
-    expect(candidates.map((item) => item.normalizedManufacturer)).toEqual([
-      'reckitt benckiser',
-      'reckitt benckiser',
-      'reckitt benckiser',
-    ]);
+    expect(candidates.map((item) => item.normalizedName)).toEqual(['nurofen', 'nurofen', 'nurofen'])
+    expect(candidates.map((item) => item.normalizedManufacturer)).toEqual(['reckitt benckiser', 'reckitt benckiser', 'reckitt benckiser'])
     expect(candidates.map((item) => item.compositeKey)).toEqual([
       'nurofen|reckitt benckiser|200000|TABLET|24|GB',
       'nurofen|reckitt benckiser|200000|TABLET|24|GB',
       'nurofen|reckitt benckiser|200000|TABLET|24|GB',
-    ]);
-  });
+    ])
+  })
 
   it('normalizes presentation fields without hiding the invalid GTIN', () => {
-    const candidate = normalizeMedicine(rawRecords[1]);
+    const candidate = normalizeMedicine(rawRecords[1])
 
     expect(candidate).toMatchObject({
       canonicalName: 'Nurofen 200 mg tablets',
@@ -87,20 +79,16 @@ describe('normalizeMedicine', () => {
       prescriptionRequired: false,
       countryCode: 'GB',
       registrationDate: '2023-01-15',
-    });
-  });
+    })
+  })
 
   it.each([
     ['dosageUnit', { dosageUnit: 'ml' }, 'UNSUPPORTED_DOSAGE_UNIT:ml'],
     ['dosageForm', { dosageForm: 'capsule' }, 'UNSUPPORTED_DOSAGE_FORM:capsule'],
     ['country', { country: 'US' }, 'UNSUPPORTED_COUNTRY:US'],
-    [
-      'prescriptionRequired',
-      { prescriptionRequired: 'sometimes' },
-      'INVALID_PRESCRIPTION_VALUE:sometimes',
-    ],
+    ['prescriptionRequired', { prescriptionRequired: 'sometimes' }, 'INVALID_PRESCRIPTION_VALUE:sometimes'],
     ['registrationDate', { registrationDate: '31.02.2023' }, 'INVALID_DATE:31.02.2023'],
   ])('rejects unsupported %s instead of applying a default', (_field, patch, message) => {
-    expect(() => normalizeMedicine({ ...rawRecords[0], ...patch })).toThrow(message);
-  });
-});
+    expect(() => normalizeMedicine({ ...rawRecords[0], ...patch })).toThrow(message)
+  })
+})

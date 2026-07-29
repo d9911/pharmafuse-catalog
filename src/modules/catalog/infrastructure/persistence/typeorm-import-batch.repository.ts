@@ -1,7 +1,7 @@
-import type { EntityManager } from 'typeorm';
-import type { ImportStats } from '../../application/import-catalog.types';
-import type { ImportBatchRepository } from '../../application/ports/import-batch.repository';
-import { ImportBatchOrmEntity } from './entities';
+import type { EntityManager } from 'typeorm'
+import type { ImportStats } from '../../application/import-catalog.types'
+import type { ImportBatchRepository } from '../../application/ports/import-batch.repository'
+import { ImportBatchOrmEntity } from './entities'
 
 export class TypeOrmImportBatchRepository implements ImportBatchRepository {
   constructor(private readonly manager: EntityManager) {}
@@ -18,7 +18,7 @@ export class TypeOrmImportBatchRepository implements ImportBatchRepository {
       duplicatesMerged: 0,
       recordErrors: 0,
       failureMessage: null,
-    });
+    })
   }
 
   async complete(batchId: string, stats: ImportStats, finishedAt: string): Promise<void> {
@@ -34,7 +34,7 @@ export class TypeOrmImportBatchRepository implements ImportBatchRepository {
         recordErrors: stats.recordErrors,
         failureMessage: null,
       },
-    );
+    )
   }
 
   async fail(batchId: string, message: string, finishedAt: string): Promise<void> {
@@ -45,6 +45,6 @@ export class TypeOrmImportBatchRepository implements ImportBatchRepository {
         finishedAt,
         failureMessage: message,
       },
-    );
+    )
   }
 }

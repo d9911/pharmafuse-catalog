@@ -1,1 +1,1 @@
-export { CatalogModule } from './catalog.module';
+export { CatalogModule } from './catalog.module'

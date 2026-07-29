@@ -49,9 +49,9 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main.js",
-    "lint": "eslint \"{src,test}/**/*.ts\"",
-    "format": "prettier --write \"{src,test}/**/*.ts\" \"docker/**/*.mjs\" \".github/**/*.yml\" \"*.{json,mjs,yaml,yml}\" \"README*.md\" \"SECURITY.md\" \"docs/catalog*.md\"",
-    "format:check": "prettier --check \"{src,test}/**/*.ts\" \"docker/**/*.mjs\" \".github/**/*.yml\" \"*.{json,mjs,yaml,yml}\" \"README*.md\" \"SECURITY.md\" \"docs/catalog*.md\"",
+    "lint:code": "eslint \"{src,test}/**/*.ts\"",
+    "format": "prettier --write \"{src,test}/**/*.ts\" \"docker/**/*.mjs\" \".github/**/*.yml\" \"*.{json,mjs,yaml,yml}\" \"README*.md\" \"SECURITY.md\" \"docs/**/*.md\"",
+    "format:check": "prettier --check \"{src,test}/**/*.ts\" \"docker/**/*.mjs\" \".github/**/*.yml\" \"*.{json,mjs,yaml,yml}\" \"README*.md\" \"SECURITY.md\" \"docs/**/*.md\"",
     "typecheck": "tsc --noEmit",
     "test": "jest --runInBand",
     "test:unit": "jest --runInBand --testPathPatterns='spec.ts$' --testPathIgnorePatterns='int-spec|e2e-spec'",
@@ -63,7 +63,7 @@
     "typeorm": "node --require ts-node/register --require tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:run": "npm run typeorm -- migration:run -d src/database/data-source.ts",
     "migration:revert": "npm run typeorm -- migration:revert -d src/database/data-source.ts",
-    "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run test:e2e && npm run architecture:cycles && npm run build"
+    "verify": "npm run format:check && npm run lint:code && npm run typecheck && npm run test && npm run test:e2e && npm run architecture:cycles && npm run build"
   },
   "dependencies": {
     "@nestjs/common": "11.1.28",

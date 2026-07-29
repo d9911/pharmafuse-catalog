@@ -87,17 +87,7 @@ Set:
     "type": "git",
     "url": "git+https://github.com/d9911/pharmafuse-catalog.git"
   },
-  "keywords": [
-    "pharmacy",
-    "catalog",
-    "normalization",
-    "deduplication",
-    "provenance",
-    "graphql",
-    "nestjs",
-    "sqlite",
-    "clean-architecture"
-  ],
+  "keywords": ["pharmacy", "catalog", "normalization", "deduplication", "provenance", "graphql", "nestjs", "sqlite", "clean-architecture"],
   "directories": {
     "doc": "docs",
     "test": "test"
@@ -221,7 +211,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: "23 4 * * 1"
+    - cron: '23 4 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -263,21 +253,21 @@ updates:
     schedule:
       interval: weekly
       day: monday
-      time: "05:00"
+      time: '05:00'
       timezone: UTC
     target-branch: main
     open-pull-requests-limit: 5
     groups:
       npm-minor-and-patch:
-        patterns: ["*"]
-        update-types: ["minor", "patch"]
+        patterns: ['*']
+        update-types: ['minor', 'patch']
 
   - package-ecosystem: docker
     directory: /
     schedule:
       interval: weekly
       day: monday
-      time: "05:30"
+      time: '05:30'
       timezone: UTC
     target-branch: main
     open-pull-requests-limit: 3
@@ -287,7 +277,7 @@ updates:
     schedule:
       interval: weekly
       day: monday
-      time: "06:00"
+      time: '06:00'
       timezone: UTC
     target-branch: main
     open-pull-requests-limit: 3
@@ -340,13 +330,21 @@ Use these headings in order:
 
 ```markdown
 # PharmaFuse Catalog Guide
+
 ## Provider fixtures
+
 ## Importing the catalog
+
 ## Reading the catalog
+
 ## Normalization and deterministic matching
+
 ## GTIN validation
+
 ## Idempotency and provenance
+
 ## Clean Architecture boundaries
+
 ## Verification and Graphify
 ```
 
@@ -420,16 +418,27 @@ Follow with these headings:
 
 ```markdown
 ## What PharmaFuse does
+
 ## Architecture
+
 ## Requirements
+
 ## Quick start with Docker
+
 ## Local development
+
 ## GraphQL preview
+
 ## Quality gates
+
 ## Security
+
 ## Lean by design
+
 ## Documentation
+
 ## Author
+
 ## License
 ```
 

@@ -1,20 +1,9 @@
-import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { GetCatalogQuery } from '../../application/get-catalog.query';
-import type { ImportBatchResult } from '../../application/import-catalog.types';
-import { ImportCatalogUseCase } from '../../application/import-catalog.use-case';
-import type {
-  ImportBatchView,
-  MedicineSourceView,
-  MedicineView,
-} from '../../application/ports/catalog-read.repository';
-import {
-  DosageFormModel,
-  ImportBatchModel,
-  ImportBatchStatusModel,
-  MatchStrategyModel,
-  MedicineModel,
-  MedicineSourceModel,
-} from './catalog.models';
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { GetCatalogQuery } from '../../application/get-catalog.query'
+import type { ImportBatchResult } from '../../application/import-catalog.types'
+import { ImportCatalogUseCase } from '../../application/import-catalog.use-case'
+import type { ImportBatchView, MedicineSourceView, MedicineView } from '../../application/ports/catalog-read.repository'
+import { DosageFormModel, ImportBatchModel, ImportBatchStatusModel, MatchStrategyModel, MedicineModel, MedicineSourceModel } from './catalog.models'
 
 function toSourceModel(source: MedicineSourceView): MedicineSourceModel {
   return {
@@ -24,7 +13,7 @@ function toSourceModel(source: MedicineSourceView): MedicineSourceModel {
     rawPayloadJson: source.rawPayloadJson,
     normalizedPayloadJson: source.normalizedPayloadJson,
     matchStrategy: source.matchStrategy as MatchStrategyModel,
-  };
+  }
 }
 
 export function toMedicineModel(view: MedicineView): MedicineModel {
@@ -44,7 +33,7 @@ export function toMedicineModel(view: MedicineView): MedicineModel {
     countryCode: view.countryCode,
     registrationDate: view.registrationDate,
     sources: view.sources.map(toSourceModel),
-  };
+  }
 }
 
 function toImportBatchModel(batch: ImportBatchView | ImportBatchResult): ImportBatchModel {
@@ -59,7 +48,7 @@ function toImportBatchModel(batch: ImportBatchView | ImportBatchResult): ImportB
     duplicatesMerged: batch.duplicatesMerged,
     recordErrors: batch.recordErrors,
     failureMessage: 'failureMessage' in batch ? batch.failureMessage : null,
-  };
+  }
 }
 
 @Resolver(() => MedicineModel)
@@ -71,24 +60,24 @@ export class CatalogResolver {
 
   @Query(() => [MedicineModel])
   async catalog(): Promise<MedicineModel[]> {
-    const medicines = await this.getCatalog.list();
-    return medicines.map(toMedicineModel);
+    const medicines = await this.getCatalog.list()
+    return medicines.map(toMedicineModel)
   }
 
   @Query(() => MedicineModel, { nullable: true })
   async medicine(@Args('id', { type: () => ID }) id: string): Promise<MedicineModel | null> {
-    const medicine = await this.getCatalog.findById(id);
-    return medicine === null ? null : toMedicineModel(medicine);
+    const medicine = await this.getCatalog.findById(id)
+    return medicine === null ? null : toMedicineModel(medicine)
   }
 
   @Query(() => [ImportBatchModel])
   async importBatches(): Promise<ImportBatchModel[]> {
-    const batches = await this.getCatalog.listImportBatches();
-    return batches.map(toImportBatchModel);
+    const batches = await this.getCatalog.listImportBatches()
+    return batches.map(toImportBatchModel)
   }
 
   @Mutation(() => ImportBatchModel)
   async importCatalog(): Promise<ImportBatchModel> {
-    return toImportBatchModel(await this.importCatalogUseCase.execute());
+    return toImportBatchModel(await this.importCatalogUseCase.execute())
   }
 }

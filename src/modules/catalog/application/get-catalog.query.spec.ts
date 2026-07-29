@@ -1,9 +1,5 @@
-import { GetCatalogQuery } from './get-catalog.query';
-import type {
-  CatalogReadRepository,
-  ImportBatchView,
-  MedicineView,
-} from './ports/catalog-read.repository';
+import { GetCatalogQuery } from './get-catalog.query'
+import type { CatalogReadRepository, ImportBatchView, MedicineView } from './ports/catalog-read.repository'
 
 const medicine: MedicineView = {
   id: 'medicine-1',
@@ -20,7 +16,7 @@ const medicine: MedicineView = {
   countryCode: 'GB',
   registrationDate: '2023-01-15',
   sources: [],
-};
+}
 
 const batch: ImportBatchView = {
   id: 'batch-1',
@@ -33,34 +29,34 @@ const batch: ImportBatchView = {
   duplicatesMerged: 2,
   recordErrors: 0,
   failureMessage: null,
-};
+}
 
 class StaticCatalogReadRepository implements CatalogReadRepository {
   listMedicines(): Promise<MedicineView[]> {
-    return Promise.resolve([medicine]);
+    return Promise.resolve([medicine])
   }
 
   findMedicine(id: string): Promise<MedicineView | null> {
-    return Promise.resolve(id === medicine.id ? medicine : null);
+    return Promise.resolve(id === medicine.id ? medicine : null)
   }
 
   listImportBatches(): Promise<ImportBatchView[]> {
-    return Promise.resolve([batch]);
+    return Promise.resolve([batch])
   }
 }
 
 describe('GetCatalogQuery', () => {
-  const query = new GetCatalogQuery(new StaticCatalogReadRepository());
+  const query = new GetCatalogQuery(new StaticCatalogReadRepository())
 
   it('returns the catalog read model', async () => {
-    await expect(query.list()).resolves.toEqual([medicine]);
-  });
+    await expect(query.list()).resolves.toEqual([medicine])
+  })
 
   it('returns null for an unknown medicine ID', async () => {
-    await expect(query.findById('missing')).resolves.toBeNull();
-  });
+    await expect(query.findById('missing')).resolves.toBeNull()
+  })
 
   it('returns import batch history', async () => {
-    await expect(query.listImportBatches()).resolves.toEqual([batch]);
-  });
-});
+    await expect(query.listImportBatches()).resolves.toEqual([batch])
+  })
+})

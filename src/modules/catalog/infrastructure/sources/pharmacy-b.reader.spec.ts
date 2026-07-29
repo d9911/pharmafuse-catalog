@@ -1,9 +1,9 @@
-import { join } from 'node:path';
-import { PharmacyBReader } from './pharmacy-b.reader';
+import { join } from 'node:path'
+import { PharmacyBReader } from './pharmacy-b.reader'
 
 describe('PharmacyBReader', () => {
   it('maps XML values without losing GTIN separators or string booleans', async () => {
-    const reader = new PharmacyBReader(join(process.cwd(), 'pnarmacy'));
+    const reader = new PharmacyBReader(join(process.cwd(), 'pnarmacy'))
 
     await expect(reader.read()).resolves.toEqual([
       {
@@ -36,6 +36,6 @@ describe('PharmacyBReader', () => {
           },
         },
       },
-    ]);
-  });
-});
+    ])
+  })
+})
