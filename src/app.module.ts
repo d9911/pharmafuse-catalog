@@ -18,7 +18,7 @@ import { CatalogModule } from './modules/catalog'
       useFactory: (config: AppConfig) => ({
         autoSchemaFile: resolveGraphqlSchemaTarget(config.nodeEnv, process.cwd()),
         sortSchema: true,
-        graphiql: config.nodeEnv !== 'production',
+        graphiql: config.graphiqlEnabled,
         path: '/graphql',
       }),
     }),

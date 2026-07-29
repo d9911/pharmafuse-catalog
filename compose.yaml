@@ -10,6 +10,7 @@ services:
       NODE_ENV: production
       HOST: 0.0.0.0
       PORT: 3008
+      GRAPHIQL_ENABLED: 'true'
       DATABASE_PATH: /app/data/pharmacy.sqlite
       SOURCE_ROOT: /app/pnarmacy
     ports:
