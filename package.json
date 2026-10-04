@@ -71,7 +71,7 @@
     "@nestjs/core": "11.1.28",
     "@nestjs/graphql": "13.4.2",
     "@nestjs/mercurius": "13.4.2",
-    "@nestjs/platform-fastify": "11.1.28",
+    "@nestjs/platform-fastify": "11.2.4",
     "@nestjs/typeorm": "11.0.3",
     "better-sqlite3": "13.0.2",
     "class-transformer": "0.5.1",
